@@ -189,10 +189,11 @@ allure-report/
 - устанавливает зависимости;
 - устанавливает браузеры Playwright;
 - запускает тесты;
-- сохраняет Playwright report как artifact.
+- сохраняет Playwright report как artifact;
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history.
+- отправляет результат запуска в Telegram.
 
 После первого успешного запуска CI Allure Report будет доступен по ссылке:
 
@@ -206,11 +207,17 @@ https://evgeniyinline.github.io/diplom-JS-PW/
 Settings -> Pages -> Deploy from a branch -> gh-pages / root
 ```
 
+Для Telegram-уведомлений в настройках репозитория должны быть добавлены secrets:
+
+```text
+TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID
+```
+
 ## Что планируется донастроить
 
 Для полного соответствия требованиям дипломного проекта осталось:
 
-- добавить отправку уведомлений в Telegram;
 - подключить передачу результатов в Allure TestOps;
 - добавить в README ссылки и скриншоты Allure Report / Allure TestOps после настройки инфраструктуры.
 

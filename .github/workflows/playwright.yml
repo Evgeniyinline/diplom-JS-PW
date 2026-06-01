@@ -87,3 +87,38 @@ jobs:
           echo "### Allure Report" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "$ALLURE_REPORT_URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Send Telegram notification
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TEST_STATUS: ${{ job.status }}
+          BRANCH_NAME: ${{ github.ref_name }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram secrets are not configured, skipping notification"
+            exit 0
+          fi
+
+          if [ "$TEST_STATUS" = "success" ]; then
+            STATUS_TEXT="PASSED"
+          else
+            STATUS_TEXT="FAILED"
+          fi
+
+          MESSAGE=$(cat <<EOF
+          Playwright tests: ${STATUS_TEXT}
+          Repository: ${GITHUB_REPOSITORY}
+          Branch: ${BRANCH_NAME}
+          Commit: ${GITHUB_SHA:0:7}
+          Run: ${RUN_URL}
+          Allure: ${ALLURE_REPORT_URL}
+          EOF
+          )
+
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${MESSAGE}" \
+            --data "disable_web_page_preview=true"
