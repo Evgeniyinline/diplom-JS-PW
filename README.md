@@ -14,28 +14,45 @@
 
 ## Стек
 
-- JavaScript
-- Playwright
-- Allure Report 3
-- Allure TestOps
-- allurectl
-- Faker
-- GitHub Actions
-- Telegram Bot API
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=000)
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=fff)
+![Faker](https://img.shields.io/badge/Faker-0A7AFF?style=for-the-badge)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=fff)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=fff)
+![Allure Report](https://img.shields.io/badge/Allure_Report-FF6A00?style=for-the-badge)
+![Allure TestOps](https://img.shields.io/badge/Allure_TestOps-1F9D8A?style=for-the-badge)
+![Telegram](https://img.shields.io/badge/Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=fff)
+
+В проекте используется:
+
+- JavaScript и Playwright для UI/API автотестов;
+- Page Object и компоненты для UI-слоя;
+- Service layer и controllers для API-слоя;
+- builders на Faker для генерации тестовых данных;
+- Allure Report 3 для локальных и GitHub Pages отчётов;
+- Allure TestOps для хранения запусков;
+- GitHub Actions для CI;
+- Telegram Bot API для уведомлений о результате запуска.
 
 ## Что покрыто
+
+Всего в проекте 18 автотестов: 13 UI и 5 API.
 
 ### UI
 
 UI-тесты находятся в `tests/ui`.
 
-Покрытие:
+Покрытие UI:
 
-- авторизация;
-- валидация формы авторизации;
-- проверка ролевого доступа для администратора и менеджера;
-- поиск КП;
-- создание КП для разных калькуляторов.
+1. Визуальная проверка страницы авторизации.
+2. Негативная авторизация с неверными учётными данными.
+3. Валидация пустой формы авторизации.
+4. Авторизация и переход в личный кабинет.
+5. Проверка ролевого доступа администратора.
+6. Проверка ролевого доступа менеджера.
+7. Поиск КП: empty state, найденный результат и очистка поиска.
+8. Создание КП и проверка отображения в списке.
+9. Создание КП для калькуляторов `Base · RUB`, `Pro · RUB`, `KZ · KZT`.
 
 В UI-тестах используются:
 
@@ -48,13 +65,13 @@ UI-тесты находятся в `tests/ui`.
 
 API-тесты находятся в `tests/api`.
 
-Покрытие:
+Покрытие API:
 
-- получение `better-auth` токена администратора;
-- создание пользователя;
-- получение пользователя;
-- обновление роли пользователя;
-- удаление пользователя.
+1. `POST/GET` получение `better-auth` токена администратора.
+2. `POST` создание пользователя.
+3. `POST/GET` создание пользователя и получение по `id`.
+4. `POST/PUT/GET` обновление роли пользователя `manager -> admin -> manager`.
+5. `POST/GET/DELETE` создание пользователя, удаление и проверка `404`.
 
 В API-тестах используются:
 
