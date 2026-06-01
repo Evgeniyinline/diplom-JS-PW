@@ -1,1 +1,1 @@
-{"id":"a02a24c6d48ca714a388a90280941105","fullName":"api/users/users.spec.js:114:6","name":"@POST @GET @DELETE Удалить пользователя через API","status":"passed","testResultsByEnv":{"default":"cd260e8a58c12245ad893a190a9a6992"}}
+{"id":"a02a24c6d48ca714a388a90280941105","fullName":"api/users/users.spec.js:114:6","name":"@POST @GET @DELETE Удалить пользователя через API","status":"passed","testResultsByEnv":{"default":"3f76379c39dba3a0b3637c46809704df"}}
