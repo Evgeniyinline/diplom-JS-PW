@@ -17,7 +17,6 @@ export default {
     ...(testOpsEnabled
       ? {
           testops: {
-            import: '@allurereport/plugin-testops',
             options: {
               endpoint: env.ALLURE_ENDPOINT,
               accessToken: env.ALLURE_TOKEN,
