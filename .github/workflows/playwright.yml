@@ -16,6 +16,9 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     env:
       ALLURE_REPORT_URL: https://evgeniyinline.github.io/diplom-JS-PW/
       ALLURE_ENDPOINT: https://allure.autotests.cloud/
@@ -38,6 +41,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Install dependencies
         run: npm ci
@@ -95,6 +101,17 @@ jobs:
           publish_branch: gh-pages
           publish_dir: ./allure-report
           force_orphan: false
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        if: always() && github.ref == 'refs/heads/main'
+        with:
+          path: ./allure-report
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        if: always() && github.ref == 'refs/heads/main'
 
       - name: Add Allure report link to summary
         if: always()
