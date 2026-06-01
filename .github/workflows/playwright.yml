@@ -57,7 +57,7 @@ jobs:
           ALLURE_LAUNCH_NAME: ${{ env.ALLURE_LAUNCH_NAME }}
           ALLURE_LAUNCH_TAGS: github-actions,playwright,javascript,diplom
           ALLURE_RESULTS: allure-results
-        run: allurectl watch -- npx playwright test --workers=2
+        run: allurectl watch -- npx playwright test
 
       - name: Prepare Allure history
         if: always()
