@@ -1,1 +1,1 @@
-{"id":"22719d1e99ac6a6d623879c736814527","fullName":"api/users/users.spec.js:7:6","name":"@POST Создать нового пользователя через API","status":"passed","testResultsByEnv":{"default":"bd74a144283adda0f48893b72c2f43b6"}}
+{"id":"22719d1e99ac6a6d623879c736814527","fullName":"api/users/users.spec.js:7:6","name":"@POST Создать нового пользователя через API","status":"passed","testResultsByEnv":{"default":"fc9eca081ab3c28ff7f05354e28a23d7"}}
