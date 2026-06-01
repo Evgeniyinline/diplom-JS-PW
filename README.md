@@ -1,16 +1,27 @@
 # Diplom Autotests
 
+[![Playwright Tests](https://github.com/Evgeniyinline/diplom-JS-PW/actions/workflows/playwright.yml/badge.svg)](https://github.com/Evgeniyinline/diplom-JS-PW/actions/workflows/playwright.yml)
+
 Дипломный проект по автоматизации тестирования для приложения "Калькулятор КП".
 
-Проект демонстрирует UI и API автотесты на Playwright с использованием Page Object, Service layer, генераторов тестовых данных, Allure Report и GitHub Actions.
+Проект демонстрирует UI и API автотесты на Playwright с использованием Page Object, Service layer, генераторов тестовых данных, Allure Report, Allure TestOps, Telegram-уведомлений и GitHub Actions.
+
+## Ссылки
+
+- GitHub Actions: https://github.com/Evgeniyinline/diplom-JS-PW/actions
+- Allure Report: https://evgeniyinline.github.io/diplom-JS-PW/
+- Allure TestOps: https://allure.autotests.cloud/project/5230/launches
 
 ## Стек
 
 - JavaScript
 - Playwright
 - Allure Report 3
+- Allure TestOps
+- allurectl
 - Faker
 - GitHub Actions
+- Telegram Bot API
 
 ## Что покрыто
 
@@ -178,25 +189,27 @@ allure-report/
 
 ## CI
 
-В проекте есть базовый GitHub Actions workflow:
+В проекте настроен GitHub Actions workflow:
 
 ```text
 .github/workflows/playwright.yml
 ```
 
-Сейчас workflow:
+Workflow запускается на `push`, `pull_request` и вручную через `workflow_dispatch`.
+
+Что делает workflow:
 
 - устанавливает зависимости;
 - устанавливает браузеры Playwright;
-- запускает тесты;
+- запускает тесты через `allurectl watch`;
+- передаёт результаты запуска в Allure TestOps;
 - сохраняет Playwright report как artifact;
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
-- публикует Allure Report в GitHub Pages с сохранением history.
+- публикует Allure Report в GitHub Pages с сохранением history;
 - отправляет результат запуска в Telegram.
-- передаёт результаты запуска в Allure TestOps через `allurectl`.
 
-После первого успешного запуска CI Allure Report будет доступен по ссылке:
+Allure Report доступен по ссылке:
 
 ```text
 https://evgeniyinline.github.io/diplom-JS-PW/
@@ -208,7 +221,7 @@ https://evgeniyinline.github.io/diplom-JS-PW/
 Settings -> Pages -> Deploy from a branch -> gh-pages / root
 ```
 
-Для Telegram-уведомлений в настройках репозитория должны быть добавлены secrets:
+Для Telegram-уведомлений в настройках репозитория добавлены secrets:
 
 ```text
 TELEGRAM_BOT_TOKEN
@@ -223,17 +236,29 @@ Project ID: 5230
 Endpoint: https://allure.autotests.cloud/
 ```
 
-В настройках репозитория должен быть добавлен secret:
+Для отправки результатов в TestOps в настройках репозитория добавлен secret:
 
 ```text
 ALLURE_TOKEN
 ```
 
-## Что планируется донастроить
+## Статус дипломного задания
 
-Для полного соответствия требованиям дипломного проекта осталось:
+- UI автоматизация: 5+ функциональных тестов с Page Object и генератором данных.
+- API автоматизация: 5 функциональных тестов с Service layer и генератором данных.
+- CI/CD: автотесты запускаются в GitHub Actions.
+- Telegram: уведомления о результате запуска отправляются ботом.
+- Reporting: Allure Report публикуется в GitHub Pages с history.
+- Allure TestOps: результаты запуска передаются через `allurectl`.
 
-- добавить в README ссылки и скриншоты Allure Report / Allure TestOps после настройки инфраструктуры.
+Для полного оформления README под требования диплома осталось добавить скриншоты:
+
+```text
+docs/screenshots/allure-report.png
+docs/screenshots/allure-testops.png
+```
+
+После добавления скриншотов их нужно вставить в README в отдельный раздел `Скриншоты`.
 
 ## Полезные команды
 
