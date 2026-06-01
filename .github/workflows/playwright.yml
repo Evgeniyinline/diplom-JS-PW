@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ALLURE_REPORT_URL: https://evgeniyinline.github.io/diplom-JS-PW/
+      ALLURE_ENDPOINT: https://allure.autotests.cloud/
+      ALLURE_PROJECT_ID: 5230
+      ALLURE_LAUNCH_NAME: "Diplom JS/PW #${{ github.run_number }}"
 
     steps:
       - name: Checkout repository
@@ -54,6 +57,8 @@ jobs:
 
       - name: Generate Allure report
         if: always()
+        env:
+          ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
         run: npx allure@latest generate ./allure-results --config ./allurerc.mjs --output ./allure-report
 
       - name: Upload Playwright report

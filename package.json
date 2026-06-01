@@ -20,6 +20,7 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@allurereport/plugin-testops": "^3.9.0",
     "@faker-js/faker": "^10.4.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.0",

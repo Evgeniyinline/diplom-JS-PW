@@ -194,6 +194,7 @@ allure-report/
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history.
 - отправляет результат запуска в Telegram.
+- передаёт результаты запуска в Allure TestOps.
 
 После первого успешного запуска CI Allure Report будет доступен по ссылке:
 
@@ -214,11 +215,24 @@ TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 ```
 
+Для отправки результатов в Allure TestOps используется проект:
+
+```text
+Orlov-Diplom-PW-JS
+Project ID: 5230
+Endpoint: https://allure.autotests.cloud/
+```
+
+В настройках репозитория должен быть добавлен secret:
+
+```text
+ALLURE_TOKEN
+```
+
 ## Что планируется донастроить
 
 Для полного соответствия требованиям дипломного проекта осталось:
 
-- подключить передачу результатов в Allure TestOps;
 - добавить в README ссылки и скриншоты Allure Report / Allure TestOps после настройки инфраструктуры.
 
 ## Полезные команды
