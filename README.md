@@ -194,7 +194,7 @@ allure-report/
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history.
 - отправляет результат запуска в Telegram.
-- передаёт результаты запуска в Allure TestOps.
+- передаёт результаты запуска в Allure TestOps через `allurectl`.
 
 После первого успешного запуска CI Allure Report будет доступен по ссылке:
 
