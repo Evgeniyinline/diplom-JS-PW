@@ -190,12 +190,26 @@ allure-report/
 - устанавливает браузеры Playwright;
 - запускает тесты;
 - сохраняет Playwright report как artifact.
+- генерирует Allure Report;
+- сохраняет Allure Report как artifact;
+- публикует Allure Report в GitHub Pages с сохранением history.
+
+После первого успешного запуска CI Allure Report будет доступен по ссылке:
+
+```text
+https://evgeniyinline.github.io/diplom-JS-PW/
+```
+
+Для работы GitHub Pages нужно включить публикацию из ветки `gh-pages` в настройках репозитория:
+
+```text
+Settings -> Pages -> Deploy from a branch -> gh-pages / root
+```
 
 ## Что планируется донастроить
 
 Для полного соответствия требованиям дипломного проекта осталось:
 
-- настроить публикацию Allure Report с history в GitHub Pages;
 - добавить отправку уведомлений в Telegram;
 - подключить передачу результатов в Allure TestOps;
 - добавить в README ссылки и скриншоты Allure Report / Allure TestOps после настройки инфраструктуры.
