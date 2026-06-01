@@ -113,6 +113,10 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "$ALLURE_REPORT_URL" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Prepare Allure notifications summary
+        if: always()
+        run: node scripts/prepare-allure-notifications.js
+
       - name: Download Allure notifications
         if: always()
         run: |
@@ -137,6 +141,14 @@ jobs:
             "-DconfigFile=notifications/config.json" \
             "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
             "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
+            "-Dnotifications.telegram.replyTo=" \
+            "-Dnotifications.base.project=Diplom JS/PW" \
+            "-Dnotifications.base.environment=calc-dev" \
+            "-Dnotifications.base.language=ru" \
+            "-Dnotifications.base.allureFolder=." \
+            "-Dnotifications.base.enableChart=true" \
+            "-Dnotifications.base.enableSuitesPublishing=false" \
+            "-Dnotifications.base.durationFormat=HH:mm:ss.SSS" \
             "-Dnotifications.base.reportLink=${ALLURE_REPORT_URL}" \
             "-Dnotifications.base.comment=Allure TestOps: ${ALLURE_TESTOPS_URL} | Artifacts: ${RUN_URL}" \
             "-Dnotifications.base.customData.run=${GITHUB_RUN_NUMBER}" \
