@@ -1,1 +1,1 @@
-{"id":"b0c016be75c692388a658bdcb299a67a","fullName":"api/users/users.spec.js:58:6","name":"@POST @PUT @GET Обновить роль пользователя через API","status":"passed","testResultsByEnv":{"default":"abf8836228bc599d3d5d8889a1a0950d"}}
+{"id":"b0c016be75c692388a658bdcb299a67a","fullName":"api/users/users.spec.js:58:6","name":"@POST @PUT @GET Обновить роль пользователя через API","status":"passed","testResultsByEnv":{"default":"a0381f43befb9c435c6dcb6bdfa8c63e"}}
