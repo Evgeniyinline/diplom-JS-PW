@@ -25,6 +25,35 @@ test.describe('Users API', () => {
     expect(body.user.name).toBe(user.name);
     
   });
+// получение пользователя через API
+ test('@POST @GET Получить пользователя через API', async ({ adminApi }) => {
+    const user = new UserBuilder()
+      .withEmail()
+      .withPassword('Test123456!')
+      .withUserName()
+      .withUserSurname()
+      .withRole('manager')
+      .build();
+
+    const createResponse = await adminApi.createUser(user);
+
+    expect(createResponse.status()).toBe(200);
+
+    const createBody = await createResponse.json();
+    const userId = createBody.user.id;
+
+    const getResponse = await adminApi.getUser(userId);
+
+    expect(getResponse.status()).toBe(200);
+
+    const getBody = await getResponse.json();
+
+    expect(getBody.id).toBe(userId);
+    expect(getBody.email).toBe(user.email.toLowerCase());
+    expect(getBody.role).toBe(user.role);
+    expect(getBody.name).toBe(user.name);
+
+  });
 // обновление роли пользователя через API
  test('@POST @PUT @GET Обновить роль пользователя через API', async ({ adminApi }) => {
     const user = new UserBuilder()
