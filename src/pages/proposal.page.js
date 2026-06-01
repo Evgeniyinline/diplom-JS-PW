@@ -87,21 +87,5 @@ export class ProposalPage {
   return this.page.getByRole('heading', {
     name: proposalName,
   });
-}
-
-
-
-
-    // this.navigate = page.locator('nav');
-    // this.calcProLink = page.getByTestId('pro-calculator-content');
-    // this.calcBaseLink = page.getByTestId('base-calculator-content');
-    // this.analyticsLink = page.getByTestId('analytics-content');
-    // this.nomenclaturesLink = page.getByTestId('nomenclatures-content');
-    // this.usersLink = page.getByTestId('users-content');
-    // this.profileDropdown = page.getByTestId('profile-dropdown');
-    // this.profileLink = page.getByTestId('profile-content');
-    // this.signoutLink = page.getByTestId('signout-content');
-    // this.switchConfirmLink = page.getByTestId('base-calculator-switch-confirm-continue');
-    // TODO: закончить реализацию
-
+  }
 }

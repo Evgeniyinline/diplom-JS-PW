@@ -1,9 +1,6 @@
 import { request } from '@playwright/test';
 import { AuthFacade } from '@/helpers/facades/auth.facade.js';
-import {
-  ensureAdminStorageStateDir,
-  getAdminStorageStatePath,
-} from '@/helpers/auth/admin-storage-state.js';
+import { ensureAdminStorageStateDir, getAdminStorageStatePath} from '@/helpers/auth/admin-storage-state.js';
 
 export default async function globalSetup() {
   ensureAdminStorageStateDir();

@@ -1,9 +1,6 @@
 import { request } from '@playwright/test';
 import { AuthFacade } from '@/helpers/facades/auth.facade.js';
-import {
-  clearCreatedUsersCleanup,
-  getCreatedUsersForCleanup,
-} from '@/helpers/cleanup/users-cleanup.js';
+import { clearCreatedUsersCleanup, getCreatedUsersForCleanup} from '@/helpers/cleanup/users-cleanup.js';
 import { getAdminStorageStatePath } from '@/helpers/auth/admin-storage-state.js';
 
 export default async function globalTeardown() {
