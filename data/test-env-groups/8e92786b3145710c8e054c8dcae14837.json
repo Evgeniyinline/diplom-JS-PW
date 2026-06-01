@@ -1,1 +1,1 @@
-{"id":"8e92786b3145710c8e054c8dcae14837","fullName":"ui/dashboard/proposals.spec.js:53:7","name":"Создание КП: KZ · KZT","status":"passed","testResultsByEnv":{"default":"33429ad03f0012eda585acfb0e30e347"}}
+{"id":"8e92786b3145710c8e054c8dcae14837","fullName":"ui/dashboard/proposals.spec.js:53:7","name":"Создание КП: KZ · KZT","status":"broken","testResultsByEnv":{"default":"12274961510c3c6476a272aebe7bb9a8"}}
