@@ -232,12 +232,6 @@ Allure Report доступен по ссылке:
 https://evgeniyinline.github.io/diplom-JS-PW/
 ```
 
-Для работы GitHub Pages нужно включить публикацию из ветки `gh-pages` в настройках репозитория:
-
-```text
-Settings -> Pages -> Deploy from a branch -> gh-pages / root
-```
-
 Для Telegram-уведомлений в настройках репозитория добавлены secrets:
 
 ```text
