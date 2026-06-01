@@ -76,7 +76,7 @@ export const test = base.extend({
   },
   
 // для API-тестов, где нужен админ
-  adminApi: async (_, use, testInfo) => {
+  adminApi: async ({}, use, testInfo) => {
     const adminRequest = await apiRequest.newContext({
       storageState: getAdminStorageStatePath(),
     });
