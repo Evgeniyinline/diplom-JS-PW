@@ -1,1 +1,1 @@
-{"id":"0d1b84c72261e8d3ba9b0387e2a15ba6","fullName":"ui/access/roles.spec.js:6:7","name":"Админ видит все разделы навигации","status":"failed","testResultsByEnv":{"default":"b735b00dfd6453e26dde0569829926d1"}}
+{"id":"0d1b84c72261e8d3ba9b0387e2a15ba6","fullName":"ui/access/roles.spec.js:6:7","name":"Админ видит все разделы навигации","status":"passed","testResultsByEnv":{"default":"05eef999d488401383f8eb72dc0264f9"}}

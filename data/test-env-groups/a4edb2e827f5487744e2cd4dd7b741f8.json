@@ -1,1 +1,1 @@
-{"id":"a4edb2e827f5487744e2cd4dd7b741f8","fullName":"ui/auth/auth.spec.js:9:5","name":"Визуальная проверка страницы авторизации","status":"failed","testResultsByEnv":{"default":"57f5fd896128978d015ae6656121bd4d"}}
+{"id":"a4edb2e827f5487744e2cd4dd7b741f8","fullName":"ui/auth/auth.spec.js:9:5","name":"Визуальная проверка страницы авторизации","status":"passed","testResultsByEnv":{"default":"61933515cdad7b34a42d70a6e6e778d6"}}

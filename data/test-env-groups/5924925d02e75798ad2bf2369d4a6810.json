@@ -1,1 +1,1 @@
-{"id":"5924925d02e75798ad2bf2369d4a6810","fullName":"ui/dashboard/proposals.spec.js:37:5","name":"Создание КП: новое КП отображается в списке","status":"skipped","testResultsByEnv":{"default":"4d4d78fff9dd637e355196db6209702e"}}
+{"id":"5924925d02e75798ad2bf2369d4a6810","fullName":"ui/dashboard/proposals.spec.js:37:5","name":"Создание КП: новое КП отображается в списке","status":"passed","testResultsByEnv":{"default":"18a6d0a9194a3a823af27f274532ff8b"}}

@@ -1,1 +1,1 @@
-{"id":"fd74b473d0cb34ffcf1650d765807590","fullName":"ui/dashboard/proposals.spec.js:18:5","name":"Поиск КП: найден результат по существующему названию","status":"skipped","testResultsByEnv":{"default":"3f750cd031b6c9f905be53d482c27f2e"}}
+{"id":"fd74b473d0cb34ffcf1650d765807590","fullName":"ui/dashboard/proposals.spec.js:18:5","name":"Поиск КП: найден результат по существующему названию","status":"passed","testResultsByEnv":{"default":"ae900d35c8cb895f77b198dc38900e14"}}
