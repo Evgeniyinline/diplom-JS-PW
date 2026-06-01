@@ -261,7 +261,7 @@ ALLURE_TOKEN
 - Telegram: уведомления о результате запуска отправляются ботом.
 - Reporting: Allure Report публикуется в GitHub Pages с history.
 - Allure TestOps: результаты запуска передаются через `allurectl`.
-- Скриншоты Allure Report и Allure TestOps добавлены в README.
+- Скриншоты Allure Report, Allure TestOps и Telegram-уведомления добавлены в README.
 
 ## Скриншоты
 
@@ -272,6 +272,10 @@ ALLURE_TOKEN
 ### Allure TestOps
 
 ![Allure TestOps](docs/screenshots/allure-testops.png)
+
+### Telegram Notification
+
+![Telegram Notification](docs/screenshots/telegram-notification.png)
 
 ## Полезные команды
 
