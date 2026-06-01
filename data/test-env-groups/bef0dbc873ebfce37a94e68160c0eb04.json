@@ -1,1 +1,1 @@
-{"id":"bef0dbc873ebfce37a94e68160c0eb04","fullName":"ui/dashboard/proposals.spec.js:9:5","name":"Поиск КП: показан empty state если результатов нет","status":"failed","testResultsByEnv":{"default":"4f2e5361c429fb5fc372dcef7454e14c"}}
+{"id":"bef0dbc873ebfce37a94e68160c0eb04","fullName":"ui/dashboard/proposals.spec.js:9:5","name":"Поиск КП: показан empty state если результатов нет","status":"failed","testResultsByEnv":{"default":"da0c06607feebee3516e58bdb0f9a721"}}
