@@ -32,7 +32,7 @@
 - Allure Report 3 для локальных и GitHub Pages отчётов;
 - Allure TestOps для хранения запусков;
 - GitHub Actions для CI;
-- Telegram Bot API для уведомлений о результате запуска с диаграммой прохождения тестов.
+- qa-guru/allure-notifications для Telegram-уведомлений с диаграммой прохождения тестов.
 
 ## Что покрыто
 
@@ -224,7 +224,7 @@ Workflow запускается на `push`, `pull_request` и вручную ч
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history;
-- отправляет результат запуска в Telegram вместе с диаграммой прохождения тестов.
+- отправляет результат запуска в Telegram через `qa-guru/allure-notifications` вместе с диаграммой прохождения тестов.
 
 Allure Report доступен по ссылке:
 

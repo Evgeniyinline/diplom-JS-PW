@@ -11,6 +11,7 @@ node_modules/
 # Allure
 /allure-report/
 /allure-results/
+/notifications/*.jar
 
 # Test runtime artifacts
 auth-token.json

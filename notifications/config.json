@@ -1,0 +1,23 @@
+{
+  "base": {
+    "logo": "",
+    "project": "Diplom JS/PW",
+    "environment": "calc-dev",
+    "comment": "",
+    "reportLink": "",
+    "language": "ru",
+    "allureFolder": "allure-report/",
+    "enableChart": true,
+    "darkMode": true,
+    "enableSuitesPublishing": false,
+    "durationFormat": "HH:mm:ss.SSS",
+    "customData": {}
+  },
+  "telegram": {
+    "token": "",
+    "chat": "",
+    "topic": "",
+    "replyTo": "",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}
