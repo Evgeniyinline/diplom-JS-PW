@@ -4,6 +4,10 @@ import { AuthFacade } from "@/helpers/facades/auth.facade.js";
 import { SignInEmailBuilder } from "@/helpers/builders/auth.builder.js";
 import { UserBuilder } from "@/helpers/builders/user.builder.js";
 import { addCreatedUsersForCleanup } from "@/helpers/cleanup/users-cleanup.js";
+import {
+  getAdminStorageStatePath,
+  readAdminStorageState,
+} from "@/helpers/auth/admin-storage-state.js";
 
 export const test = base.extend({
 
@@ -21,9 +25,10 @@ export const test = base.extend({
   },
 
 // для UI-тестов, где нужен уже авторизованный админ
-  adminApp: async ({page, request}, use) => {
-    const authApi = new AuthFacade(request);
-    await authApi.authorizeByApi(page.context());
+  adminApp: async ({page}, use) => {
+    const storageState = readAdminStorageState();
+
+    await page.context().addCookies(storageState.cookies);
 
     const app = new App(page);
     await use(app);
@@ -32,15 +37,15 @@ export const test = base.extend({
 // для UI-тестов, где нужен уже авторизованный менеджер
   managerApp: async ({page}, use, testInfo) => {
     const managerPassword = 'Test123456!';
-    const adminRequest = await apiRequest.newContext();
+    const adminRequest = await apiRequest.newContext({
+      storageState: getAdminStorageStatePath(),
+    });
     const managerRequest = await apiRequest.newContext();
     const adminApi = new AuthFacade(adminRequest);
     const managerApi = new AuthFacade(managerRequest);
     let managerId;
 
     try {
-      await adminApi.authorizeAdminByApi();
-
       const manager = new UserBuilder()
         .withEmail()
         .withPassword(managerPassword)
@@ -74,11 +79,12 @@ export const test = base.extend({
   },
   
 // для API-тестов, где нужен админ
-  adminApi: async ({request}, use, testInfo) => {
-    const adminApi = new AuthFacade(request);
+  adminApi: async (_, use, testInfo) => {
+    const adminRequest = await apiRequest.newContext({
+      storageState: getAdminStorageStatePath(),
+    });
+    const adminApi = new AuthFacade(adminRequest);
     const createdUserIds = [];
-
-    await adminApi.authorizeAdminByApi();
 
     const createUser = adminApi.createUser.bind(adminApi);
 
@@ -96,10 +102,14 @@ export const test = base.extend({
       return response;
     };
 
-    await use(adminApi);
+    try {
+      await use(adminApi);
 
-    if (testInfo.status === testInfo.expectedStatus) {
-      addCreatedUsersForCleanup(testInfo, createdUserIds);
+      if (testInfo.status === testInfo.expectedStatus) {
+        addCreatedUsersForCleanup(testInfo, createdUserIds);
+      }
+    } finally {
+      await adminRequest.dispose();
     }
   },
   

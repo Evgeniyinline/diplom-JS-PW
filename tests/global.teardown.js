@@ -4,6 +4,7 @@ import {
   clearCreatedUsersCleanup,
   getCreatedUsersForCleanup,
 } from '@/helpers/cleanup/users-cleanup.js';
+import { getAdminStorageStatePath } from '@/helpers/auth/admin-storage-state.js';
 
 export default async function globalTeardown() {
   const userIds = getCreatedUsersForCleanup();
@@ -12,12 +13,12 @@ export default async function globalTeardown() {
     return;
   }
 
-  const api = await request.newContext();
+  const api = await request.newContext({
+    storageState: getAdminStorageStatePath(),
+  });
   const adminApi = new AuthFacade(api);
 
   try {
-    await adminApi.authorizeAdminByApi();
-
     for (const userId of userIds) {
       const response = await adminApi.removeUser(userId);
 

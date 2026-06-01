@@ -12,7 +12,12 @@ export class AuthService {
   async authorizeAdmin(payload = new SignInEmailBuilder().build()) {
     const response = await this.authController.signInEmail(payload);
 
-    expect(response.ok()).toBeTruthy();
+    const responseBody = response.ok() ? '' : await response.text();
+
+    expect(
+      response.ok(),
+      `Admin auth failed. Status: ${response.status()}. Body: ${responseBody}`
+    ).toBeTruthy();
 
     const storageState = await this.authController.getStorageState();
     const sessionCookie = storageState.cookies.find(

@@ -51,6 +51,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
+  globalSetup: './tests/global.setup.js',
   globalTeardown: './tests/global.teardown.js',
 
   /* Configure projects for major browsers */
