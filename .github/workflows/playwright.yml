@@ -45,23 +45,19 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test
-
       - name: Setup allurectl
         uses: allure-framework/setup-allurectl@v1
-        if: always()
         with:
           allure-endpoint: ${{ env.ALLURE_ENDPOINT }}
           allure-token: ${{ secrets.ALLURE_TOKEN }}
           allure-project-id: ${{ env.ALLURE_PROJECT_ID }}
 
-      - name: Upload results to Allure TestOps
-        if: always()
+      - name: Run Playwright tests
         env:
           ALLURE_LAUNCH_NAME: ${{ env.ALLURE_LAUNCH_NAME }}
           ALLURE_LAUNCH_TAGS: github-actions,playwright,javascript,diplom
-        run: allurectl upload ./allure-results
+          ALLURE_RESULTS: allure-results
+        run: allurectl watch -- npx playwright test
 
       - name: Prepare Allure history
         if: always()
