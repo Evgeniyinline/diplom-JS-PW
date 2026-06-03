@@ -1,1 +1,1 @@
-{"id":"13e9bf1bbbab065153a6695dd83abe34","fullName":"api/auth/better-auth.spec.js:7:7","name":"@POST @GET Получить админский токен через API","status":"passed","testResultsByEnv":{"default":"1a663892c4cbb6af36469e0f10e674b6"}}
+{"id":"13e9bf1bbbab065153a6695dd83abe34","fullName":"api/auth/better-auth.spec.js:7:7","name":"@POST @GET Получить админский токен через API","status":"passed","testResultsByEnv":{"default":"9cd19bc313d5f1584dfb554a95d8b112"}}
