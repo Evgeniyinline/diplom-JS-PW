@@ -64,11 +64,6 @@ export class ProposalPage {
 
   }
 
-  // getProposalByName(proposalName) {
-  //   return this.page.getByText(proposalName);
-
-  // }
-
   getProposalByName(proposalName) {
   return this.proposalRows.filter({ hasText: proposalName });
 }
