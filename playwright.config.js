@@ -1,13 +1,21 @@
 // @ts-check
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { loadEnvFile } from 'node:process';
 import { defineConfig, devices } from '@playwright/test';
+
+const ENV_PATH = resolve(process.cwd(), '.env');
+
+if (existsSync(ENV_PATH)) {
+  loadEnvFile(ENV_PATH);
+}
+
+const BASE_URL = process.env.BASE_URL || 'https://calc-dev.v04.dev';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -20,8 +28,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Keep CI stable, but run local tests a bit faster. */
-  workers: process.env.CI ? 1 : 2,
+  /* Keep external test stand below rate limits. */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
@@ -33,7 +41,7 @@ export default defineConfig({
         suiteTitle: true,
         environmentInfo: {
           Project: 'Diplom',
-          BaseURL: 'https://calc-dev.v04.dev',
+          BaseURL: BASE_URL,
           Framework: 'Playwright',
           Node: process.version,
         },
@@ -42,7 +50,7 @@ export default defineConfig({
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: 'https://calc-dev.v04.dev',
+    baseURL: BASE_URL,
     headless: !!process.env.CI,
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',

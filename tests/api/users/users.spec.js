@@ -1,13 +1,13 @@
 import { expect } from '@playwright/test';
 import { test } from '@/helpers/fixtures/fixture.js';
-import { UserBuilder } from '@/helpers/builders/user.builder.js';
+import { UserBuilder } from '@/helpers/builders/index.js';
 
 test.describe('Users API', () => {
 // создание нового пользователя через API
  test('@POST Создать нового пользователя через API', async ({ adminApi }) => {
     const user = new UserBuilder()
       .withEmail()
-      .withPassword('Test123456!')
+      .withValidPassword()
       .withUserName()
       .withUserSurname()
       .withRole('manager')
@@ -29,7 +29,7 @@ test.describe('Users API', () => {
  test('@POST @GET Получить пользователя через API', async ({ adminApi }) => {
     const user = new UserBuilder()
       .withEmail()
-      .withPassword('Test123456!')
+      .withValidPassword()
       .withUserName()
       .withUserSurname()
       .withRole('manager')
@@ -58,7 +58,7 @@ test.describe('Users API', () => {
  test('@POST @PUT @GET Обновить роль пользователя через API', async ({ adminApi }) => {
     const user = new UserBuilder()
       .withEmail()
-      .withPassword('Test123456!')
+      .withValidPassword()
       .withUserName()
       .withUserSurname()
       .withRole('manager')
@@ -114,7 +114,7 @@ test.describe('Users API', () => {
  test('@POST @GET @DELETE Удалить пользователя через API', async ({ adminApi }) => {
     const user = new UserBuilder()
       .withEmail()
-      .withPassword('Test123456!')
+      .withValidPassword()
       .withUserName()
       .withUserSurname()
       .withRole('manager')

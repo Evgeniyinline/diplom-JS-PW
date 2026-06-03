@@ -37,7 +37,7 @@ export class ProposalPage {
   }
 
   async getProposalsCount () {
-    return await this.proposalsList.count();
+    return await this.proposalRows.count();
   }
 
   // открыть модалку создания
@@ -78,8 +78,8 @@ export class ProposalPage {
 
   }
 
-  getCurrency() {
-    return this.page.getByText(/RUB|KZT|UZS|EUR/);
+  getCurrency(currency) {
+    return this.page.getByText(currency ?? /RUB|KZT|UZS|EUR/);
 
   }
 

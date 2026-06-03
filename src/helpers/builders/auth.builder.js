@@ -1,8 +1,8 @@
 export class SignInEmailBuilder {
   constructor() {
     this.callbackURL = "/proposals";
-    this.email = process.env.E2E_EMAIL || "eorlov@o2xygen.ru";
-    this.password = process.env.E2E_PASSWORD || "eorlov@o2xygen.ru";
+    this.email = process.env.E2E_EMAIL;
+    this.password = process.env.E2E_PASSWORD;
   }
 
   withCallbackURL(callbackURL) {
@@ -21,6 +21,10 @@ export class SignInEmailBuilder {
   }
 
   build() {
+    if (!this.email || !this.password) {
+      throw new Error('E2E_EMAIL and E2E_PASSWORD must be set');
+    }
+
     return {
       callbackURL: this.callbackURL,
       email: this.email,

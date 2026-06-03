@@ -1,8 +1,8 @@
-import { expect } from "@playwright/test";
 import { AccessGroupsController } from "@/controllers/access-groups.controller.js";
 
 const DEFAULT_ACCESS_GROUP_NAME = 'Pro/base';
 const ACCESS_GROUP_RETRY_COUNT = 3;
+const ACCESS_GROUP_RETRY_TIMEOUT = 1000;
 
 function wait(timeout) {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -18,14 +18,33 @@ export class AccessGroupsService {
   }
 
   async getAccessGroupByName(accessGroupName = DEFAULT_ACCESS_GROUP_NAME) {
-    const response = await this.getAccessGroups();
+    let response;
 
-    expect(response.ok()).toBeTruthy();
+    for (let attempt = 1; attempt <= ACCESS_GROUP_RETRY_COUNT; attempt += 1) {
+      response = await this.getAccessGroups();
+
+      if (response.ok()) {
+        break;
+      }
+
+      if (response.status() !== 429 || attempt === ACCESS_GROUP_RETRY_COUNT) {
+        break;
+      }
+
+      await wait(ACCESS_GROUP_RETRY_TIMEOUT * attempt);
+    }
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Не удалось получить группы доступа. Status: ${response.status()}. Body: ${body}`);
+    }
 
     const body = await response.json();
     const accessGroup = body.data.find((group) => group.name === accessGroupName);
 
-    expect(accessGroup).toBeTruthy();
+    if (!accessGroup) {
+      throw new Error(`Группа доступа ${accessGroupName} не найдена`);
+    }
 
     return accessGroup;
   }
@@ -42,18 +61,15 @@ export class AccessGroupsService {
       }
 
       if (attempt < ACCESS_GROUP_RETRY_COUNT) {
-        await wait(500);
+        await wait(ACCESS_GROUP_RETRY_TIMEOUT * attempt);
       }
     }
 
     const errorBody = await response.text();
 
-    expect(
-      response.ok(),
+    throw new Error(
       `Не удалось добавить пользователя ${userId} в группу ${accessGroupName}. Status: ${response.status()}. Body: ${errorBody}`
-    ).toBeTruthy();
-
-    return response;
+    );
   }
 }
 

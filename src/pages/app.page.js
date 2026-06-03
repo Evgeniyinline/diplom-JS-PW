@@ -1,4 +1,4 @@
-import { AuthPage, ProposalPage } from "@/pages/index.js";
+import { AuthPage, ProposalPage, UsersPage } from "@/pages/index.js";
 import { HeaderComponent, EmptyStateComponent } from "@/components/index.js";
 
 export class App {
@@ -9,6 +9,7 @@ export class App {
     this.emptyStateComponent = new EmptyStateComponent(page);
     this.authPage = new AuthPage(page);
     this.proposalPage = new ProposalPage(page);
+    this.usersPage = new UsersPage(page);
   }
 
   async openProposalPage () {

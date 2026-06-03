@@ -15,6 +15,12 @@ export class UserBuilder {
 
   }
 
+  withValidPassword (password) {
+    this.password = password ?? `Test${faker.number.int({ min: 100, max: 999 })}${faker.string.alpha({ length: 4 })}!`;
+    return this;
+
+  }
+
   withUserName (userName) {
     this.name = userName ?? faker.person.firstName();
     return this;

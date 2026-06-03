@@ -1,5 +1,5 @@
 import { UsersController } from "@/controllers/users.controller.js";
-import { UserBuilder } from "@/helpers/builders/user.builder.js";
+import { UserBuilder } from "@/helpers/builders/index.js";
 import { AccessGroupsService } from "@/services/access-groups.service.js";
 
 const MANAGER_ACCESS_GROUP_NAMES = ['Pro/base', 'KZ/UZ'];
@@ -10,7 +10,7 @@ export class UsersService {
     this.accessGroupsService = new AccessGroupsService(request);
   }
 
-  async createUser(user = new UserBuilder().withEmail().withPassword().withUserName().withUserSurname().withRole().build(), accessGroupName) {
+  async createUser(user = new UserBuilder().withEmail().withValidPassword().withUserName().withUserSurname().withRole().build(), accessGroupName) {
     const response = await this.usersController.createUser(user);
 
     if (response.ok()) {

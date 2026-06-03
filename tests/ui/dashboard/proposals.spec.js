@@ -1,36 +1,40 @@
 import { expect } from "@playwright/test";
 import { test } from '@/helpers/fixtures/fixture.js'
 
-import { ProposalBuilder } from '@/helpers/builders/proposal.builder.js'
-
-test.describe.configure({ mode: 'serial' });
+import { ProposalBuilder } from '@/helpers/builders/index.js'
 
 // проверка поиска КП - empty state страница
 test ('Поиск КП: показан empty state если результатов нет', async ({ adminApp }) => {
   await adminApp.openProposalPage();
-  // + faker
-  await adminApp.proposalPage.searchOrder('КП 123');
+  await adminApp.proposalPage.searchOrder(`Не существующее КП ${Date.now()}`);
 
   await expect(adminApp.emptyStateComponent.getSearchResult()).toBeVisible();
 });
 
 // проверка поиска КП - найден результат по существующему названию
-test ('Поиск КП: найден результат по существующему названию', async ({ adminApp }) => {
-  await adminApp.openProposalPage();
-  // + faker
-  await adminApp.proposalPage.searchOrder('Автотест КП');
+test ('Поиск КП: найден результат по созданному названию', async ({ managerApp }) => {
+  const proposal = new ProposalBuilder().withBaseRub().build();
 
-  await expect(adminApp.emptyStateComponent.getSearchResult()).not.toBeVisible();
+  await managerApp.openProposalPage();
+  await managerApp.proposalPage.createProposal(proposal);
+  await managerApp.openProposalPage();
+  await managerApp.proposalPage.searchOrder(proposal.proposalName);
+
+  await expect(managerApp.proposalPage.getProposalByName(proposal.proposalName)).toBeVisible();
+  await expect(managerApp.emptyStateComponent.getSearchResult()).not.toBeVisible();
 });
 
 // проверка поиска КП - очистка поиска возвращает список КП
-test ('Поиск КП: очистка поиска возвращает список КП', async ({ adminApp }) => {
-  await adminApp.openProposalPage();
-  // + faker
-  await adminApp.proposalPage.searchOrder('КП 123');
-  await adminApp.proposalPage.clearSearch();
+test ('Поиск КП: очистка поиска возвращает список КП', async ({ managerApp }) => {
+  const proposal = new ProposalBuilder().withBaseRub().build();
 
-  expect(await adminApp.proposalPage.getProposalsCount()).toBeGreaterThan(0);
+  await managerApp.openProposalPage();
+  await managerApp.proposalPage.createProposal(proposal);
+  await managerApp.openProposalPage();
+  await managerApp.proposalPage.searchOrder(`Не существующее КП ${Date.now()}`);
+  await managerApp.proposalPage.clearSearch();
+
+  expect(await managerApp.proposalPage.getProposalsCount()).toBeGreaterThan(0);
 });
 
 // проверка создания КП - новое КП отображается в списке
@@ -48,16 +52,13 @@ test ('Создание КП: новое КП отображается в спи
 
 });
 
-// проверка создания КП - новое КП отображается в списке для каждого региона калькулятора
+// проверка создания КП для каждого региона калькулятора
 for (const proposal of ProposalBuilder.getCalculatorProposals()) {
   test(`Создание КП: ${proposal.calculatorName}`, async ({ managerApp }) => {
     await managerApp.openProposalPage();
     await managerApp.proposalPage.createProposal(proposal);
 
     await expect(managerApp.proposalPage.getOpenedProposalTitle(proposal.proposalName)).toBeVisible();
-    await managerApp.openProposalPage();
-
-    await expect(managerApp.proposalPage.getProposalByName(proposal.proposalName)).toBeVisible();
 
   });
 

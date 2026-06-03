@@ -1,32 +1,24 @@
 export class ProposalBuilder {
-  constructor() {
-    this.proposal = {
-      proposalName: `Автотест КП ${Date.now()}`,
-      calculatorName: 'Base · RUB',
-      expectedCurrency: 'RUB',
-    };
-  }
-
   withBaseRub() {
-    this.proposal.calculatorName = 'Base · RUB';
-    this.proposal.expectedCurrency = 'RUB';
+    this.calculatorName = 'Base · RUB';
+    this.expectedCurrency = 'RUB';
     return this;
   }
 
   withProRub() {
-    this.proposal.calculatorName = 'Pro · RUB';
-    this.proposal.expectedCurrency = 'RUB';
+    this.calculatorName = 'Pro · RUB';
+    this.expectedCurrency = 'RUB';
     return this;
   }
 
   withKzKzt() {
-    this.proposal.calculatorName = 'KZ · KZT';
-    this.proposal.expectedCurrency = 'KZT';
+    this.calculatorName = 'KZ · KZT';
+    this.expectedCurrency = 'KZT';
     return this;
   }
 
   withProposalName(proposalName) {
-    this.proposal.proposalName = proposalName;
+    this.proposalName = proposalName;
     return this;
   }
 
@@ -41,6 +33,10 @@ export class ProposalBuilder {
   }
 
   build() {
-    return this.proposal;
+    return {
+      proposalName: this.proposalName ?? `Автотест КП ${Date.now()}`,
+      calculatorName: this.calculatorName ?? 'Base · RUB',
+      expectedCurrency: this.expectedCurrency ?? 'RUB',
+    };
   }
 }

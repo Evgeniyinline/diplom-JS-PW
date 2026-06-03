@@ -1,6 +1,5 @@
-import { expect } from "@playwright/test";
-import { AuthController, BASE_URL } from "@/controllers/auth.controller.js";
-import { SignInEmailBuilder } from "@/helpers/builders/auth.builder.js";
+import { AuthController } from "@/controllers/auth.controller.js";
+import { SignInEmailBuilder } from "@/helpers/builders/index.js";
 
 const AUTH_COOKIE_NAME = "better-auth.session_token";
 
@@ -12,19 +11,19 @@ export class AuthService {
   async authorizeAdmin(payload = new SignInEmailBuilder().build()) {
     const response = await this.authController.signInEmail(payload);
 
-    const responseBody = response.ok() ? '' : await response.text();
-
-    expect(
-      response.ok(),
-      `Admin auth failed. Status: ${response.status()}. Body: ${responseBody}`
-    ).toBeTruthy();
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Admin auth failed. Status: ${response.status()}. Body: ${body}`);
+    }
 
     const storageState = await this.authController.getStorageState();
     const sessionCookie = storageState.cookies.find(
       (cookie) => cookie.name === AUTH_COOKIE_NAME
     );
 
-    expect(sessionCookie).toBeTruthy();
+    if (!sessionCookie) {
+      throw new Error(`Admin auth failed. Cookie ${AUTH_COOKIE_NAME} was not found`);
+    }
 
     return {
       storageState,
@@ -47,5 +46,3 @@ export async function authorizeByApi(request, context) {
   const authService = new AuthService(request);
   await authService.authorizeUiContext(context);
 }
-
-export { BASE_URL };

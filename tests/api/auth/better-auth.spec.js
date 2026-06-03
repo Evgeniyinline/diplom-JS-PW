@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '@/helpers/fixtures/fixture.js';
-import { SignInEmailBuilder } from '@/helpers/builders/auth.builder.js';
+import { SignInEmailBuilder } from '@/helpers/builders/index.js';
 
 test.describe('Auth API', () => {
 // получение админского токена через API

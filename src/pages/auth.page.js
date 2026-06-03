@@ -16,22 +16,18 @@ export class AuthPage {
     this.errorMessage = page.getByText('Invalid email or password');
 
   }
-  // авторизация статичного пользователя
-  async signInStaticUser () {
-    
-    await this.emailInput.fill('eorlov@o2xygen.ru');
-    await this.passwordInput.fill('eorlov@o2xygen.ru');
-    await this.loginButton.click();
-  }
-  // TODO: уйти от статичного пользователя
-
-  // авторизация с не верными данными
-  async signInWithInvalidData (user) {
+  // авторизация пользователя
+  async signIn (user) {
     const {email, password} = user;
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
 
+  }
+
+  // авторизация с не верными данными
+  async signInWithInvalidData (user) {
+    await this.signIn(user);
   }
   // пустая авторизация
   async signInWithEmptyData () {
@@ -56,7 +52,7 @@ export class AuthPage {
 
   // открытие страницы авторизации
   async openAuthPage () {
-    await this.page.goto('https://calc-dev.v04.dev/auth');
+    await this.page.goto('/auth');
 
   }
 

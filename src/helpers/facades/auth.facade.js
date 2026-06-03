@@ -1,4 +1,4 @@
-import { SignInEmailBuilder } from "@/helpers/builders/auth.builder.js";
+import { SignInEmailBuilder } from "@/helpers/builders/index.js";
 import { AuthService } from "@/services/auth.service.js";
 import { UsersService } from "@/services/users.service.js";
 import { AccessGroupsService } from "@/services/access-groups.service.js";
