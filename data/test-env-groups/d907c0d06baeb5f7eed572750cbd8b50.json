@@ -1,1 +1,1 @@
-{"id":"d907c0d06baeb5f7eed572750cbd8b50","fullName":"api/users/users.spec.js:29:6","name":"@POST @GET Получить пользователя через API","status":"passed","testResultsByEnv":{"default":"1673985a8735376bcb0b3d90d7196fd8"}}
+{"id":"d907c0d06baeb5f7eed572750cbd8b50","fullName":"api/users/users.spec.js:29:6","name":"@POST @GET Получить пользователя через API","status":"passed","testResultsByEnv":{"default":"06c17e5ff3c58102df4f35e00f078587"}}
