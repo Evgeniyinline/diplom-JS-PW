@@ -3,7 +3,7 @@ export class HeaderComponent {
   constructor(page) {
     this.page = page;
 
-    this.proposalsLink = page.getByRole("link", { name: 'Предложения' });
+    this.proposalsLink = page.getByRole("link", { name: 'Мои КП' });
     this.nomenclaturesLink = page.getByRole("link", { name: 'Номенклатуры' });
     this.usersLink = page.getByRole("link", { name: 'Пользователи' });
     this.calcLink = page.getByRole("link", { name: 'Калькуляторы' });
