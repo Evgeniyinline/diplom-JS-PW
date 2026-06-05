@@ -1,1 +1,1 @@
-{"id":"19575a3cbc21b0e69fe71cb76572e798","fullName":"ui/auth/auth.spec.js:14:5","name":"Авторизация с неверными данными показывает ошибку","status":"passed","testResultsByEnv":{"default":"39db944de8c53a15dd136dcc8746df57"}}
+{"id":"19575a3cbc21b0e69fe71cb76572e798","fullName":"ui/auth/auth.spec.js:14:5","name":"Авторизация с неверными данными показывает ошибку","status":"passed","testResultsByEnv":{"default":"a8bfa6bc9927e1c8b035022d4fe9119d"}}
