@@ -63,3 +63,20 @@ for (const proposal of ProposalBuilder.getCalculatorProposals()) {
   });
 
 }
+
+test ('Dashboard: страница /dashboard открывается', async ({ managerApp }) => {
+  await managerApp.openDashboardPage();
+
+  await expect(managerApp.page).toHaveURL(/\/dashboard$/);
+  await expect(managerApp.dashboardPage.title).toBeVisible();
+});
+
+test ('Создание КП из dashboard', async ({ managerApp }) => {
+  const proposal = new ProposalBuilder().withBaseRub().build();
+
+  await managerApp.openDashboardPage();
+  await managerApp.dashboardPage.createProposal(proposal);
+
+  await expect(managerApp.proposalPage.getOpenedProposalTitle(proposal.proposalName)).toBeVisible();
+
+});

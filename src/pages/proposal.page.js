@@ -1,3 +1,5 @@
+import { CreateProposalComponent } from "@/components/index.js";
+
 export class ProposalPage {
 
   // страница Мои КП
@@ -8,12 +10,8 @@ export class ProposalPage {
     this.searchButton = page.getByTitle('Поиск');
     this.searchInput = page.getByPlaceholder('Поиск по названию...');
     this.createButton = page.getByRole("button", { name: 'Создать КП' });
-    this.nameInput = page.getByPlaceholder('Например: КП для ООО Рога и Копыта')
-    this.calculatorSelect = page.locator('[role="combobox"]');
-    this.createProposalModal = page.getByRole('dialog');
     this.proposalsList = page.getByTestId('proposals-list');
-    this.calculatorSelect = page.getByText('Выберите калькулятор');
-    this.submitCreateButton = this.createProposalModal.getByRole('button', { name: 'Создать' });
+    this.createProposalModal = new CreateProposalComponent(page);
     this.proposalRows = page.locator('[data-testid^="proposal-row-"]');
 
   }
@@ -50,17 +48,15 @@ export class ProposalPage {
   // выбрать калькулятор
 
   async selectCalculator(calculatorName) {
-    await this.calculatorSelect.click();
-    await this.page.getByRole('option', { name: calculatorName }).click();
+    await this.createProposalModal.openCalculatorSelect();
+    await this.createProposalModal.selectCalculator(calculatorName);
 
   }
   // создание КП
 
-  async createProposal({ proposalName, calculatorName }) {
+  async createProposal(proposal) {
     await this.openCreateProposalModal();
-    await this.nameInput.fill(proposalName);
-    await this.selectCalculator(calculatorName);
-    await this.submitCreateButton.click();
+    await this.createProposalModal.createProposal(proposal);
 
   }
 
