@@ -2,3 +2,4 @@ export * from "@/pages/auth.page.js";
 export * from "@/pages/proposal.page.js";
 export * from "@/pages/users.page.js";
 export * from "@/pages/dashboard.page.js";
+export * from "@/pages/nomenclatures.page.js";

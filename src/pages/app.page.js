@@ -1,4 +1,4 @@
-import { AuthPage, ProposalPage, UsersPage, DashboardPage } from "@/pages/index.js";
+import { AuthPage, ProposalPage, UsersPage, DashboardPage, NomenclaturesPage } from "@/pages/index.js";
 import { HeaderComponent, EmptyStateComponent } from "@/components/index.js";
 
 export class App {
@@ -11,6 +11,7 @@ export class App {
     this.proposalPage = new ProposalPage(page);
     this.usersPage = new UsersPage(page);
     this.dashboardPage = new DashboardPage(page);
+    this.nomenclaturesPage = new NomenclaturesPage(page);
   }
 
   async openProposalPage () {
@@ -19,5 +20,9 @@ export class App {
 
   async openDashboardPage () {
     await this.page.goto('/dashboard');
+  }
+
+  async openNomenclaturesPage () {
+    await this.page.goto('/nomenclatures');
   }
 }
