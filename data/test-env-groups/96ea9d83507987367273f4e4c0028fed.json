@@ -1,1 +1,1 @@
-{"id":"96ea9d83507987367273f4e4c0028fed","fullName":"ui/auth/auth.spec.js:33:5","name":"Авторизация с корректными данными перенаправляет на страницу КП","status":"passed","testResultsByEnv":{"default":"dc3f80f6ebca61c09cca649d09b3cdf8"}}
+{"id":"96ea9d83507987367273f4e4c0028fed","fullName":"ui/auth/auth.spec.js:33:5","name":"Авторизация с корректными данными перенаправляет на страницу КП","status":"passed","testResultsByEnv":{"default":"d39285473dc93c241594cb5c9968ba47"}}
