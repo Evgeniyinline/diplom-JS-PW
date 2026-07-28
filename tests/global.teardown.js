@@ -1,7 +1,7 @@
 import { request } from '@playwright/test';
 import { AuthFacade } from '@/helpers/facades/auth.facade.js';
 import { clearCreatedUsersCleanup, getCreatedUsersForCleanup} from '@/helpers/cleanup/users-cleanup.js';
-import { getAdminStorageStatePath } from '@/helpers/auth/admin-storage-state.js';
+import { clearPreparedUsers, getAdminStorageStatePath, readPreparedUsers } from '@/helpers/auth/admin-storage-state.js';
 
 const BASE_URL = process.env.BASE_URL || 'https://calc-dev.v04.dev';
 const REMOVE_USER_RETRY_COUNT = 5;
@@ -31,19 +31,31 @@ async function removeUserWithRetry(adminApi, userId) {
 }
 
 export default async function globalTeardown() {
-  const userIds = getCreatedUsersForCleanup();
+
+  const preparedUsers = readPreparedUsers();
+  
+  const userIds = [
+    ...getCreatedUsersForCleanup(),
+    preparedUsers.manager?.id,
+    preparedUsers.editProfile?.id ].filter(Boolean);
 
   if (!userIds.length) {
     return;
+
   }
 
   const api = await request.newContext({
+    
     baseURL: BASE_URL,
     extraHTTPHeaders: {
       Origin: BASE_URL,
+
     },
+
     storageState: getAdminStorageStatePath(),
+
   });
+
   const adminApi = new AuthFacade(api);
 
   try {
@@ -53,9 +65,12 @@ export default async function globalTeardown() {
       if (![200, 404].includes(response.status())) {
         console.warn(`Не удалось удалить тестового пользователя ${userId}. Status: ${response.status()}`);
       }
+
     }
 
     clearCreatedUsersCleanup();
+    clearPreparedUsers();
+
   } finally {
     await api.dispose();
   }

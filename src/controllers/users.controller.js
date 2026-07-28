@@ -19,6 +19,18 @@ export class UsersController {
     });
   }
 
+  // получение данных текущего пользователя по авторизационной cookie
+  async getCurrentUserProfile() {
+    return this.request.get('/api/users/me');
+  }
+
+  // обновление профиля текущего пользователя по авторизационной cookie
+  async updateCurrentUserProfile(profile) {
+    return this.request.put('/api/users/me', {
+      data: profile,
+    });
+  }
+
   async removeUser(userId) {
     return this.request.post('/api/auth/admin/remove-user', {
       data: {

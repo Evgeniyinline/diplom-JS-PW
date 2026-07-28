@@ -1,152 +1,90 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { expect } from '@playwright/test';
 import { test } from '@/helpers/fixtures/fixture.js';
 import { UserBuilder } from '@/helpers/builders/index.js';
 
-test.describe('Users API', () => {
-// создание нового пользователя через API
- test('@POST Создать нового пользователя через API', async ({ adminApi }) => {
-    const user = new UserBuilder()
-      .withEmail()
-      .withValidPassword()
+const AVATAR_PATH = resolve(process.cwd(), 'test-data/profile/avatar.png');
+const SIGNATURE_PATH = resolve(process.cwd(), 'test-data/profile/signature.png');
+
+
+  test('@PUT @GET Обновить личные данные пользователя', async ({ editProfileApi }) => {
+    const { adminApi, user } = editProfileApi;
+    const personalData = new UserBuilder()
       .withUserName()
       .withUserSurname()
-      .withRole('manager')
       .build();
 
-    const response = await adminApi.createUser(user);
-
-    expect(response.status()).toBe(200);
-
-    const body = await response.json();
-
-    expect(body.user).toHaveProperty('id');
-    expect(body.user.email).toBe(user.email.toLowerCase());
-    expect(body.user.role).toBe(user.role);
-    expect(body.user.name).toBe(user.name);
-    
-  });
-// получение пользователя через API
- test('@POST @GET Получить пользователя через API', async ({ adminApi }) => {
-    const user = new UserBuilder()
-      .withEmail()
-      .withValidPassword()
-      .withUserName()
-      .withUserSurname()
-      .withRole('manager')
-      .build();
-
-    const createResponse = await adminApi.createUser(user);
-
-    expect(createResponse.status()).toBe(200);
-
-    const createBody = await createResponse.json();
-    const userId = createBody.user.id;
-
-    const getResponse = await adminApi.getUser(userId);
-
-    expect(getResponse.status()).toBe(200);
-
-    const getBody = await getResponse.json();
-
-    expect(getBody.id).toBe(userId);
-    expect(getBody.email).toBe(user.email.toLowerCase());
-    expect(getBody.role).toBe(user.role);
-    expect(getBody.name).toBe(user.name);
-
-  });
-// обновление роли пользователя через API
- test('@POST @PUT @GET Обновить роль пользователя через API', async ({ adminApi }) => {
-    const user = new UserBuilder()
-      .withEmail()
-      .withValidPassword()
-      .withUserName()
-      .withUserSurname()
-      .withRole('manager')
-      .build();
-
-    const createResponse = await adminApi.createUser(user);
-
-    expect(createResponse.status()).toBe(200);
-
-    const createBody = await createResponse.json();
-    const userId = createBody.user.id;
-
-    const updateResponse = await adminApi.updateUser(userId, {
-      role: 'admin',
-    });
+    const updateResponse = await adminApi.updateUser(user.id, personalData);
 
     expect(updateResponse.status()).toBe(200);
 
-    const updateBody = await updateResponse.json();
-
-    expect(updateBody.success).toBe(true);
-
-    const getResponse = await adminApi.getUser(userId);
+    const getResponse = await adminApi.getUser(user.id);
+    const updatedUser = await getResponse.json();
 
     expect(getResponse.status()).toBe(200);
+    expect(updatedUser.name).toBe(personalData.name);
+    expect(updatedUser.surname).toBe(personalData.surname);
+  });
 
-    const getBody = await getResponse.json();
+  test('@PUT Пустое имя не проходит валидацию', async ({ editProfileApi }) => {
+    const { adminApi, user } = editProfileApi;
 
-    expect(getBody.id).toBe(userId);
-    expect(getBody.role).toBe('admin');
-
-    const updateToManagerResponse = await adminApi.updateUser(userId, {
-      role: 'manager',
+    const response = await adminApi.updateUser(user.id, {
+      name: '',
     });
 
-    expect(updateToManagerResponse.status()).toBe(200);
-
-    const updateToManagerBody = await updateToManagerResponse.json();
-
-    expect(updateToManagerBody.success).toBe(true);
-
-    const getUpdatedUserResponse = await adminApi.getUser(userId);
-
-    expect(getUpdatedUserResponse.status()).toBe(200);
-
-    const getUpdatedUserBody = await getUpdatedUserResponse.json();
-
-    expect(getUpdatedUserBody.id).toBe(userId);
-    expect(getUpdatedUserBody.role).toBe('manager');
-
+    expect(response.status()).toBe(400);
   });
-// удаление пользователя через API
- test('@POST @GET @DELETE Удалить пользователя через API', async ({ adminApi }) => {
-    const user = new UserBuilder()
-      .withEmail()
-      .withValidPassword()
-      .withUserName()
-      .withUserSurname()
-      .withRole('manager')
-      .build();
 
-    const createResponse = await adminApi.createUser(user);
+  test('@PUT @GET Обновить профиль менеджера', async ({ editProfileApi }) => {
+    const { profileApi } = editProfileApi;
+    const managerProfile = new UserBuilder()
+      .withPosition()
+      .withPhone()
+      .withContactEmail()
+      .withShowInPdf()
+      .buildProfile();
 
-    expect(createResponse.status()).toBe(200);
+    const updateResponse = await profileApi.updateProfile(managerProfile);
 
-    const createBody = await createResponse.json();
-    const userId = createBody.user.id;
+    expect(updateResponse.status()).toBe(200);
 
-    expect(createBody.user).toHaveProperty('id');
-    expect(createBody.user.email).toBe(user.email.toLowerCase());
-    expect(createBody.user.role).toBe(user.role);
-    expect(createBody.user.name).toBe(user.name);
+    const getResponse = await profileApi.getProfile();
+    const updatedProfile = await getResponse.json();
 
-    const removeResponse = await adminApi.removeUser(userId);
-
-    expect(removeResponse.status()).toBe(200);
-
-    const removeBody = await removeResponse.json();
-
-    expect(removeBody.success).toBe(true);
-
-    const getDeletedUserResponse = await adminApi.getUser(userId);
-
-    expect(getDeletedUserResponse.status()).toBe(404);
-
-    const getDeletedUserBody = await getDeletedUserResponse.json();
-
-    expect(getDeletedUserBody.error).toBe('User not found');
-
+    expect(getResponse.status()).toBe(200);
+    expect(updatedProfile).toEqual(managerProfile);
   });
-});
+
+  test('@POST @GET @DELETE Загрузить и удалить аватар и подпись', async ({ editProfileApi }) => {
+    const { profileApi } = editProfileApi;
+
+    const avatarResponse = await profileApi.uploadAvatar({
+      name: 'avatar.png',
+      mimeType: 'image/png',
+      buffer: readFileSync(AVATAR_PATH),
+    });
+    const signatureResponse = await profileApi.uploadSignature({
+      name: 'signature.png',
+      mimeType: 'image/png',
+      buffer: readFileSync(SIGNATURE_PATH),
+    });
+
+    expect(avatarResponse.status()).toBe(200);
+    expect(signatureResponse.status()).toBe(200);
+
+    const getAvatarResponse = await profileApi.getAvatar();
+    const getSignatureResponse = await profileApi.getSignature();
+
+    expect(getAvatarResponse.status()).toBe(200);
+    expect(getSignatureResponse.status()).toBe(200);
+    expect((await getAvatarResponse.json()).url).toBeTruthy();
+    expect((await getSignatureResponse.json()).url).toBeTruthy();
+
+    const deleteAvatarResponse = await profileApi.deleteAvatar();
+    const deleteSignatureResponse = await profileApi.deleteSignature();
+
+    expect(deleteAvatarResponse.status()).toBe(200);
+    expect(deleteSignatureResponse.status()).toBe(200);
+  });

@@ -35,6 +35,16 @@ export class UsersService {
     return this.usersController.updateUser(userId, user);
   }
 
+  // получение профиля пользователя, которому принадлежит текущая сессия
+  async getCurrentUserProfile() {
+    return this.usersController.getCurrentUserProfile();
+  }
+
+  // обновление профиля пользователя, которому принадлежит текущая сессия
+  async updateCurrentUserProfile(profile) {
+    return this.usersController.updateCurrentUserProfile(profile);
+  }
+
   async removeUser(userId) {
     return this.usersController.removeUser(userId);
   }
