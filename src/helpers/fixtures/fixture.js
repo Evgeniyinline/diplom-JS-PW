@@ -1,117 +1,40 @@
 import { test as base, request as apiRequest } from "@playwright/test";
 import { App } from "@/pages/app.page.js";
 import { AuthFacade } from "@/helpers/facades/auth.facade.js";
-import { SignInEmailBuilder, UserBuilder } from "@/helpers/builders/index.js";
+import { ProfileFacade } from "@/helpers/facades/profile.facade.js";
+import { ProposalsFacade } from "@/helpers/facades/proposals.facade.js";
 import { addCreatedUsersForCleanup } from "@/helpers/cleanup/users-cleanup.js";
-import { getAdminStorageStatePath, readAdminStorageState} from "@/helpers/auth/admin-storage-state.js";
-
-const USER_CREATE_RETRY_COUNT = 3;
-const USER_REMOVE_RETRY_COUNT = 5;
-
-function wait(timeout) {
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-}
-
-async function createUserWithRetry(api, user) {
-  let response;
-  let body;
-
-  for (let attempt = 1; attempt <= USER_CREATE_RETRY_COUNT; attempt += 1) {
-    response = await api.createUser(user);
-    body = await response.json();
-
-    if (response.ok()) {
-      return { response, body };
-    }
-
-    if (response.status() !== 429 || attempt === USER_CREATE_RETRY_COUNT) {
-      break;
-    }
-
-    await wait(2000 * attempt);
-  }
-
-  return { response, body };
-}
-
-async function removeUserWithRetry(api, userId) {
-  let response;
-
-  for (let attempt = 1; attempt <= USER_REMOVE_RETRY_COUNT; attempt += 1) {
-    response = await api.removeUser(userId);
-
-    if ([200, 404].includes(response.status())) {
-      return response;
-    }
-
-    if (response.status() !== 429 || attempt === USER_REMOVE_RETRY_COUNT) {
-      break;
-    }
-
-    await wait(1000 * attempt);
-  }
-
-  return response;
-}
+import {
+  getAdminStorageStatePath,
+  getEditProfileStorageStatePath,
+  getManagerStorageStatePath,
+  readAdminStorageState,
+  readEditProfileStorageState,
+  readManagerStorageState,
+  readPreparedUsers,
+} from "@/helpers/auth/admin-storage-state.js";
 
 export const test = base.extend({
 
-// менеджер создаётся один раз на worker и переиспользуется в UI-тестах
-  managerStorageState: [async ({}, use, workerInfo) => {
-    const baseURL = workerInfo.project.use.baseURL;
-    const adminRequest = await apiRequest.newContext({
-      baseURL,
-      extraHTTPHeaders: {
-        Origin: baseURL,
-      },
-      storageState: getAdminStorageStatePath(),
-    });
+// storage менеджера готовится один раз в globalSetup и переиспользуется worker'ами
+  managerStorageState: [async ({}, use) => {
+    await use(readManagerStorageState());
+  }, { scope: 'worker' }],
+
+  // API-контекст менеджера использует storage, подготовленный в globalSetup
+  proposalsApi: [async ({}, use, workerInfo) => {
     const managerRequest = await apiRequest.newContext({
-      baseURL,
+      baseURL: workerInfo.project.use.baseURL,
       extraHTTPHeaders: {
-        Origin: baseURL,
+        Origin: workerInfo.project.use.baseURL,
       },
+      storageState: getManagerStorageStatePath(),
     });
-    const adminApi = new AuthFacade(adminRequest);
-    const managerApi = new AuthFacade(managerRequest);
-    let managerId;
 
     try {
-      const manager = new UserBuilder()
-        .withEmail()
-        .withValidPassword()
-        .withUserName()
-        .withUserSurname()
-        .withRole('manager')
-        .build();
-
-      const { response: createResponse, body: createBody } = await createUserWithRetry(adminApi, manager);
-
-      if (!createResponse.ok()) {
-        throw new Error(`Не удалось создать менеджера. Status: ${createResponse.status()}. Body: ${JSON.stringify(createBody)}`);
-      }
-
-      managerId = createBody.user.id;
-
-      const payload = new SignInEmailBuilder()
-        .withEmail(createBody.user.email)
-        .withPassword(manager.password)
-        .build();
-
-      const { storageState } = await managerApi.authorizeAdminByApi(payload);
-
-      await use(storageState);
+      await use(new ProposalsFacade(managerRequest));
     } finally {
-      if (managerId) {
-        const removeResponse = await removeUserWithRetry(adminApi, managerId);
-
-        if (![200, 404].includes(removeResponse.status())) {
-          console.warn(`Не удалось удалить менеджера ${managerId}. Status: ${removeResponse.status()}`);
-        }
-      }
-
       await managerRequest.dispose();
-      await adminRequest.dispose();
     }
   }, { scope: 'worker' }],
 
@@ -136,6 +59,52 @@ export const test = base.extend({
 
     const app = new App(page);
     await use(app);
+  },
+
+  // пользователь и storage профиля готовятся один раз в globalSetup
+  editProfileApi: [async ({}, use, workerInfo) => {
+    const baseURL = workerInfo.project.use.baseURL;
+    const adminRequest = await apiRequest.newContext({
+      baseURL,
+      extraHTTPHeaders: {
+        Origin: baseURL,
+      },
+      storageState: getAdminStorageStatePath(),
+    });
+    const userRequest = await apiRequest.newContext({
+      baseURL,
+      extraHTTPHeaders: {
+        Origin: baseURL,
+      },
+      storageState: getEditProfileStorageStatePath(),
+    });
+    const adminApi = new AuthFacade(adminRequest);
+    const profileApi = new ProfileFacade(userRequest);
+    const { editProfile: user } = readPreparedUsers();
+
+    try {
+      await use({
+        adminApi,
+        profileApi,
+        storageState: readEditProfileStorageState(),
+        user,
+      });
+    } finally {
+      await userRequest.dispose();
+      await adminRequest.dispose();
+    }
+  }, { scope: 'worker' }],
+
+  // UI-обёртка над editProfileApi: добавляет авторизованную страницу и App
+  editProfileApp: async ({page, editProfileApi}, use) => {
+    await page.context().addCookies(editProfileApi.storageState.cookies);
+
+    const app = new App(page);
+
+    await use({
+      ...editProfileApi,
+      app,
+    });
   },
 
 // для UI-тестов, где нужен уже авторизованный менеджер

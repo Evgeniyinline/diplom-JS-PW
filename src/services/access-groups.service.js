@@ -11,6 +11,7 @@ function wait(timeout) {
 export class AccessGroupsService {
   constructor(request) {
     this.accessGroupsController = new AccessGroupsController(request);
+    this.accessGroups = null;
   }
 
   async getAccessGroups() {
@@ -18,6 +19,16 @@ export class AccessGroupsService {
   }
 
   async getAccessGroupByName(accessGroupName = DEFAULT_ACCESS_GROUP_NAME) {
+    if (this.accessGroups) {
+      const accessGroup = this.accessGroups.find((group) => group.name === accessGroupName);
+
+      if (!accessGroup) {
+        throw new Error(`Группа доступа ${accessGroupName} не найдена`);
+      }
+
+      return accessGroup;
+    }
+
     let response;
 
     for (let attempt = 1; attempt <= ACCESS_GROUP_RETRY_COUNT; attempt += 1) {
@@ -40,6 +51,7 @@ export class AccessGroupsService {
     }
 
     const body = await response.json();
+    this.accessGroups = body.data;
     const accessGroup = body.data.find((group) => group.name === accessGroupName);
 
     if (!accessGroup) {

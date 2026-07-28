@@ -29,7 +29,6 @@ export class ProposalPage {
     return this.emptyComponent.getSearchResult();
   }
 
-
   async clearSearch() {
     await this.clickSearchButton();
   }
@@ -52,6 +51,12 @@ export class ProposalPage {
     await this.createProposalModal.selectCalculator(calculatorName);
 
   }
+
+  // получение варианта калькулятора через компонент формы создания
+  
+  getCalculatorOption(calculatorName) {
+    return this.createProposalModal.getCalculatorOption(calculatorName);
+  }
   // создание КП
 
   async createProposal(proposal) {
@@ -69,8 +74,17 @@ export class ProposalPage {
 
   }
 
+  // получение значения валюты в формате, отображаемом на странице КП
   getCurrency(currency) {
-    return this.page.getByText(currency ?? /RUB|KZT|UZS|EUR/);
+    const currencySymbols = {
+      RUB: '₽',
+      KZT: '₸',
+      UZS: 'сум',
+      EUR: '€',
+    };
+    const currencySymbol = currencySymbols[currency] ?? currency;
+
+    return this.page.getByText(new RegExp(`0[,.]00\\s*${currencySymbol}`)).first();
 
   }
 

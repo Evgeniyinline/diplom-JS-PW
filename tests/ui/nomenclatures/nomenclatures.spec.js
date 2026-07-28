@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { test } from '@/helpers/fixtures/fixture.js'
 
+// TODO  27.07 флаки, разобраться
 test('Номенклатуры: перемещение номенклатуры в списке', async ({ adminApp }) => {
   await adminApp.openNomenclaturesPage();
   await adminApp.nomenclaturesPage.selectServicesGroup();

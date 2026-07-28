@@ -1,5 +1,6 @@
 export class CreateProposalComponent {
   constructor (page) {
+    
     this.page = page;
 
     this.modal = page.getByRole('dialog');
@@ -21,7 +22,12 @@ export class CreateProposalComponent {
   }
   
   async selectCalculator(calculatorName) {
-    await this.page.getByRole('option', { name: calculatorName }).click();
+    await this.getCalculatorOption(calculatorName).click();
+  }
+
+  // получение нужного варианта калькулятора в открытом списке
+  getCalculatorOption(calculatorName) {
+    return this.page.getByRole('option', { name: calculatorName });
   }
 
   async createProposal({ proposalName, calculatorName }) {

@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { faker, fakerRU } from "@faker-js/faker";
 
 // генерация пользователя
 export class UserBuilder {
@@ -39,10 +39,63 @@ export class UserBuilder {
 
   }
 
+  // добавление должности в данные профиля менеджера
+  withPosition (position) {
+    this.position = position ?? faker.person.jobTitle();
+    return this;
+
+  }
+
+  // добавление готового списка контактов
+  withContacts (contacts) {
+    this.contacts = contacts ?? [];
+    return this;
+
+  }
+
+  // добавление телефона в контакты профиля
+  withPhone (phone) {
+    this.contacts = this.contacts ?? [];
+    this.contacts.push({
+      type: 'phone',
+      value: phone ?? fakerRU.phone.number(),
+    });
+    return this;
+
+  }
+
+  // добавление email в контакты профиля
+  withContactEmail (email) {
+    this.contacts = this.contacts ?? [];
+    this.contacts.push({
+      type: 'email',
+      value: email ?? faker.internet.email(),
+    });
+    return this;
+
+  }
+
+  // настройка отображения менеджера в PDF
+  withShowInPdf (showInPdf = true) {
+    this.showInPdf = showInPdf;
+    return this;
+
+  }
+
   // сбор пользователя
   build () {
     const result = {...this};
     return result;
+
+  }
+
+  // сбор данных для эндпоинта /users/me
+  buildProfile () {
+    return {
+      position: this.position ?? null,
+      contacts: this.contacts ?? [],
+      showInPdf: this.showInPdf ?? false,
+    };
 
   }
 }
