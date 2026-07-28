@@ -1,1 +1,1 @@
-{"id":"90a74a321724bd6266bfa3b5ea7470be","fullName":"ui/dashboard/proposals.spec.js:27:5","name":"Поиск КП: очистка поиска возвращает список КП","status":"passed","testResultsByEnv":{"default":"ebe0300b11726c2b5e36e7ac48b45f50"}}
+{"id":"90a74a321724bd6266bfa3b5ea7470be","fullName":"ui/dashboard/proposals.spec.js:27:5","name":"Поиск КП: очистка поиска возвращает список КП","status":"passed","testResultsByEnv":{"default":"c22248718d58f10b66815fe612cf028b"}}
