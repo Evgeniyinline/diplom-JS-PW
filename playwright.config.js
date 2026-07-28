@@ -40,7 +40,7 @@ export default defineConfig({
         detail: true,
         suiteTitle: true,
         environmentInfo: {
-          Project: 'Diplom',
+          Project: 'o2cloud calc dev',
           BaseURL: BASE_URL,
           Framework: 'Playwright',
           Node: process.version,

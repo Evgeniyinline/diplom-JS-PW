@@ -18,7 +18,7 @@ jobs:
       ALLURE_REPORT_URL: https://evgeniyinline.github.io/diplom-JS-PW/
       ALLURE_ENDPOINT: https://allure.autotests.cloud/
       ALLURE_PROJECT_ID: 5230
-      ALLURE_LAUNCH_NAME: "Diplom JS/PW #${{ github.run_number }}"
+      ALLURE_LAUNCH_NAME: "o2cloud calc dev #${{ github.run_number }}"
       ALLURE_TESTOPS_URL: https://allure.autotests.cloud/project/5230/launches
       ALLURE_NOTIFICATIONS_VERSION: 4.11.0
 
@@ -146,7 +146,7 @@ jobs:
             "-Dnotifications.telegram.token=${TELEGRAM_BOT_TOKEN}" \
             "-Dnotifications.telegram.chat=${TELEGRAM_CHAT_ID}" \
             "-Dnotifications.telegram.replyTo=" \
-            "-Dnotifications.base.project=Diplom JS/PW" \
+            "-Dnotifications.base.project=o2cloud calc dev" \
             "-Dnotifications.base.environment=calc-dev" \
             "-Dnotifications.base.language=ru" \
             "-Dnotifications.base.allureFolder=." \

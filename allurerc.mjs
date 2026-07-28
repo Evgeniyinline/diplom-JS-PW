@@ -1,10 +1,10 @@
 export default {
-  name: 'Diplom Autotests',
+  name: 'o2cloud calc dev',
   output: './allure-report',
   plugins: {
     awesome: {
       options: {
-        reportName: 'Diplom Autotests',
+        reportName: 'o2cloud calc dev',
         reportLanguage: 'en',
         singleFile: false,
         open: false,
