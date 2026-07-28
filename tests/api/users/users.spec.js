@@ -9,6 +9,7 @@ const SIGNATURE_PATH = resolve(process.cwd(), 'test-data/profile/signature.png')
 
 
   test('@PUT @GET Обновить личные данные пользователя', async ({ editProfileApi }) => {
+
     const { adminApi, user } = editProfileApi;
     const personalData = new UserBuilder()
       .withUserName()
@@ -57,18 +58,21 @@ const SIGNATURE_PATH = resolve(process.cwd(), 'test-data/profile/signature.png')
     expect(updatedProfile).toEqual(managerProfile);
   });
 
-  test('@POST @GET @DELETE Загрузить и удалить аватар и подпись', async ({ editProfileApi }) => {
-    const { profileApi } = editProfileApi;
+  test('@POST @GET @DELETE Загрузить и удалить аватар и подпись,проверка что данные не остаются', async ({ editProfileApi }) => {
 
+    const { profileApi } = editProfileApi;
     const avatarResponse = await profileApi.uploadAvatar({
       name: 'avatar.png',
       mimeType: 'image/png',
       buffer: readFileSync(AVATAR_PATH),
+
     });
+
     const signatureResponse = await profileApi.uploadSignature({
       name: 'signature.png',
       mimeType: 'image/png',
       buffer: readFileSync(SIGNATURE_PATH),
+
     });
 
     expect(avatarResponse.status()).toBe(200);
@@ -87,4 +91,14 @@ const SIGNATURE_PATH = resolve(process.cwd(), 'test-data/profile/signature.png')
 
     expect(deleteAvatarResponse.status()).toBe(200);
     expect(deleteSignatureResponse.status()).toBe(200);
+
+    // Проверяет после удаления по API не возвращаются ссылки на файлы.
+    const deletedAvatarResponse = await profileApi.getAvatar();
+    const deletedSignatureResponse = await profileApi.getSignature();
+
+    expect(deletedAvatarResponse.status()).toBe(200);
+    expect(deletedSignatureResponse.status()).toBe(200);
+    expect((await deletedAvatarResponse.json()).url).toBeFalsy();
+    expect((await deletedSignatureResponse.json()).url).toBeFalsy();
+
   });

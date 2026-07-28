@@ -14,6 +14,7 @@ test.describe.serial('Profile UI', () => {
     await expect(adminApp.profilePage.profilePage).toBeVisible();
     await expect(adminApp.profilePage.pageTitle).toHaveText('Профиль');
     await expect(adminApp.profilePage.personalDataTab).toHaveAttribute('aria-selected', 'true');
+    
   });
 
   test('В профиле отображаются данные пользователя', async ({ editProfileApp }) => {
@@ -33,6 +34,7 @@ test.describe.serial('Profile UI', () => {
     await expect(app.profilePage.surnameInput).toHaveValue(personalData.surname);
     await expect(app.profilePage.emailInput).toHaveValue(user.email);
     await expect(app.profilePage.emailInput).toBeDisabled();
+
   });
 
   test('Пользователь редактирует личные данные и изображения', async ({ editProfileApp }) => {
@@ -76,5 +78,41 @@ test.describe.serial('Profile UI', () => {
 
     await expect(app.profilePage.avatarImage).not.toBeVisible();
     await expect(app.profilePage.signatureImage).not.toBeVisible();
+
   });
+
+  // Проверяет отображение сохранённых через API настроек менеджера и их сохранение после перезагрузки UI.
+  test('В UI отображаются сохранённые настройки менеджера', async ({ editProfileApp }) => {
+    const { app, profileApi } = editProfileApp;
+    const managerProfile = new UserBuilder()
+      .withPosition()
+      .withPhone()
+      .withContactEmail()
+      .withShowInPdf()
+      .buildProfile();
+
+    const updateResponse = await profileApi.updateProfile(managerProfile);
+
+    expect(updateResponse.status()).toBe(200);
+
+    await app.openProfilePage();
+
+    await expect(app.profilePage.profilePage).toBeVisible();
+    await expect(app.profilePage.positionInput).toHaveValue(managerProfile.position);
+    await expect(app.profilePage.contactValueInputs).toHaveCount(managerProfile.contacts.length);
+
+    for (const [index, contact] of managerProfile.contacts.entries()) {
+      await expect(app.profilePage.contactValueInputs.nth(index)).toHaveValue(contact.value);
+    }
+
+    await expect(app.profilePage.showManagerInPdfCheckbox).toBeChecked();
+
+    await app.page.reload();
+
+    await expect(app.profilePage.profilePage).toBeVisible();
+    await expect(app.profilePage.positionInput).toHaveValue(managerProfile.position);
+    await expect(app.profilePage.showManagerInPdfCheckbox).toBeChecked();
+
+  });
+
 });
