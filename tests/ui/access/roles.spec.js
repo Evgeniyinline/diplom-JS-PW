@@ -25,4 +25,19 @@ test.describe('Role access UI', () => {
 
   });
 
+  // Проверяет защиту административных маршрутов от прямого открытия пользователем с ролью manager.
+  test('Менеджер не может открыть административные страницы по прямой ссылке', async ({ page, managerApp }) => {
+    
+    for (const adminPath of ['/users', '/nomenclatures', '/calculator-settings']) {
+      await page.goto(adminPath);
+
+      await expect(page).toHaveURL(/\/proposals$/);
+      await expect(managerApp.headerComponent.getNameUsersPage()).not.toBeVisible();
+      await expect(managerApp.headerComponent.getNameNomenclaturesPage()).not.toBeVisible();
+      await expect(managerApp.headerComponent.getNameCalcPage()).not.toBeVisible();
+
+    }
+    
+  });
+
 });

@@ -36,4 +36,20 @@ test('Авторизация с корректными данными перен
   await app.authPage.signIn(user);
 
   await expect(app.page).toHaveURL(/\/proposals$/);
+  
+});
+
+// Проверяет завершение пользовательской сессии и редирект при повторном открытии защищённого маршрута.
+test('Выход завершает сессию и закрывает защищённые страницы', async ({ app }) => {
+  const user = new SignInEmailBuilder().build();
+
+  await app.authPage.signIn(user);
+  await expect(app.page).toHaveURL(/\/proposals$/);
+
+  await app.page.getByTestId('header-profile-toggle').click();
+  await app.page.getByRole('button', { name: 'Выйти' }).click();
+
+  await app.openProposalPage();
+  await expect(app.page).toHaveURL(/\/auth$/);
+
 });

@@ -8,9 +8,16 @@ export class CreateProposalComponent {
 
     this.nameInput = this.modal.getByPlaceholder('Например: КП для ООО Рога и Копыта');
     this.calculatorSelect = this.modal.getByText('Выберите калькулятор');
+
+    // Ошибки при создании КП
+    this.nameError = this.modal.getByText('Введите название КП', { exact: true });
+    this.calculatorError = this.modal.getByText('Выберите калькулятор', { exact: true }).last();
+
+    // Кнопки модалки
     this.cancelButton = this.modal.getByRole('button', { name: 'Отмена' });
     this.createButton = this.modal.getByRole('button', { name: 'Создать' });
     this.closeButton = this.modal.getByRole('button').first();
+    
   }
 
   async fillName(name) {

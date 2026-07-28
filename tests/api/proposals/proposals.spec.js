@@ -18,3 +18,18 @@ for (const proposal of ProposalBuilder.getCalculatorProposals()) {
 
   });
 }
+
+// Проверяет валидацию API на создание КП без обязательного названия
+test('@POST Пустое название КП не проходит валидацию', async ({ proposalsApi }) => {
+  
+  const proposal = new ProposalBuilder()
+    .withBaseRub()
+    .withProposalName('')
+    .build();
+
+  const response = await proposalsApi.createProposal(proposal);
+
+  expect(response.status()).toBe(400);
+  expect(await response.json()).toBeTruthy();
+
+});

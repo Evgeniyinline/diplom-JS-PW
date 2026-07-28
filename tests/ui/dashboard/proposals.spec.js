@@ -9,6 +9,7 @@ test ('Поиск КП: показан empty state если результато
   await adminApp.proposalPage.searchOrder(`Не существующее КП ${Date.now()}`);
 
   await expect(adminApp.emptyStateComponent.getSearchResult()).toBeVisible();
+  
 });
 
 // проверка поиска КП - найден результат по существующему названию
@@ -21,6 +22,7 @@ test ('Поиск КП: найден результат по созданном�
 
   await expect(managerApp.proposalPage.getProposalByName(proposal.proposalName)).toBeVisible();
   await expect(managerApp.emptyStateComponent.getSearchResult()).not.toBeVisible();
+
 });
 
 // проверка поиска КП - очистка поиска возвращает список КП
@@ -33,6 +35,7 @@ test ('Поиск КП: очистка поиска возвращает спи�
   await managerApp.proposalPage.clearSearch();
 
   expect(await managerApp.proposalPage.getProposalsCount()).toBeGreaterThan(0);
+
 });
 
 // проверка создания КП - новое КП отображается в списке
@@ -59,6 +62,42 @@ test ('В форме создания доступны калькуляторы 
   for (const proposal of ProposalBuilder.getCalculatorProposals()) {
     await expect(managerApp.proposalPage.getCalculatorOption(proposal.calculatorName)).toBeVisible();
   }
+
+});
+
+// Проверяет ошибки обязательных полей при отправке пустой формы создания КП.
+test('Форма создания КП валидирует обязательные поля', async ({ managerApp }) => {
+  const modal = managerApp.proposalPage.createProposalModal;
+
+  await managerApp.openProposalPage();
+  await managerApp.proposalPage.openCreateProposalModal();
+  await modal.clickCreateButton();
+
+  await expect(modal.nameError).toBeVisible();
+  await expect(modal.calculatorError).toBeVisible();
+  await expect(modal.modal).toBeVisible();
+
+});
+
+// Проверяет, что отмена закрывает заполненную форму и не добавляет новое КП в список.
+test('Отмена закрывает форму и не создаёт КП', async ({ managerApp }) => {
+  const proposal = new ProposalBuilder().withBaseRub().build();
+  const modal = managerApp.proposalPage.createProposalModal;
+
+  await managerApp.openProposalPage();
+
+  const proposalsCountBefore = await managerApp.proposalPage.getProposalsCount();
+
+  await managerApp.proposalPage.openCreateProposalModal();
+  await modal.fillName(proposal.proposalName);
+  await modal.openCalculatorSelect();
+  await modal.selectCalculator(proposal.calculatorName);
+  await modal.clickCancelButton();
+
+  await expect(modal.modal).not.toBeVisible();
+  await expect(managerApp.proposalPage.getProposalByName(proposal.proposalName)).not.toBeVisible();
+  expect(await managerApp.proposalPage.getProposalsCount()).toBe(proposalsCountBefore);
+
 });
 
 test ('Dashboard: страница /dashboard открывается', async ({ managerApp }) => {
@@ -66,6 +105,7 @@ test ('Dashboard: страница /dashboard открывается', async ({ 
 
   await expect(managerApp.page).toHaveURL(/\/dashboard$/);
   await expect(managerApp.dashboardPage.title).toBeVisible();
+
 });
 
 test ('Создание КП из dashboard', async ({ managerApp }) => {
