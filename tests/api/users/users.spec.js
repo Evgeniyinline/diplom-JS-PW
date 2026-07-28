@@ -13,7 +13,7 @@ const SIGNATURE_PATH = resolve(process.cwd(), 'test-data/profile/signature.png')
     const personalData = new UserBuilder()
       .withUserName()
       .withUserSurname()
-      .build();
+      .buildPersonalData();
 
     const updateResponse = await adminApi.updateUser(user.id, personalData);
 

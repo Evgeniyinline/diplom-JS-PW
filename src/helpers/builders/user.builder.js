@@ -82,10 +82,24 @@ export class UserBuilder {
 
   }
 
-  // сбор пользователя
+  // сбор полного пользователя со стандартными валидными данными
   build () {
-    const result = {...this};
-    return result;
+    return {
+      email: this.email ?? faker.internet.email(),
+      password: this.password ?? `Test${faker.number.int({ min: 100, max: 999 })}${faker.string.alpha({ length: 4 })}!`,
+      name: this.name ?? faker.person.firstName(),
+      surname: this.surname ?? faker.person.lastName(),
+      role: this.role ?? 'manager',
+    };
+
+  }
+
+  // сбор имени и фамилии для частичного обновления пользователя
+  buildPersonalData () {
+    return {
+      name: this.name ?? faker.person.firstName(),
+      surname: this.surname ?? faker.person.lastName(),
+    };
 
   }
 

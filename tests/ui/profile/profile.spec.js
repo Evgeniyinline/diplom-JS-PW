@@ -21,7 +21,7 @@ test.describe.serial('Profile UI', () => {
     const personalData = new UserBuilder()
       .withUserName()
       .withUserSurname()
-      .build();
+      .buildPersonalData();
 
     const updateResponse = await adminApi.updateUser(user.id, personalData);
 
@@ -40,7 +40,7 @@ test.describe.serial('Profile UI', () => {
     const updatedUser = new UserBuilder()
       .withUserName()
       .withUserSurname()
-      .build();
+      .buildPersonalData();
 
     await app.openProfilePage();
 

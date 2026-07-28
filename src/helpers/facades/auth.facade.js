@@ -22,8 +22,8 @@ export class AuthFacade {
     return this.authService.getSession();
   }
 
-  async createUser(user) {
-    return this.usersService.createUser(user);
+  async createUser(user, accessGroupName) {
+    return this.usersService.createUser(user, accessGroupName);
   }
 
   async getUser(userId) {

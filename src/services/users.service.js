@@ -1,5 +1,4 @@
 import { UsersController } from "@/controllers/users.controller.js";
-import { UserBuilder } from "@/helpers/builders/index.js";
 import { AccessGroupsService } from "@/services/access-groups.service.js";
 
 const MANAGER_ACCESS_GROUP_NAMES = ['Pro/base', 'KZ/UZ'];
@@ -10,14 +9,18 @@ export class UsersService {
     this.accessGroupsService = new AccessGroupsService(request);
   }
 
-  async createUser(user = new UserBuilder().withEmail().withValidPassword().withUserName().withUserSurname().withRole().build(), accessGroupName) {
+  async createUser(user, accessGroupName) {
     const response = await this.usersController.createUser(user);
 
     if (response.ok()) {
       const body = await response.json();
-      const accessGroupNames = user.role === 'manager'
-        ? MANAGER_ACCESS_GROUP_NAMES
-        : [accessGroupName];
+      let accessGroupNames = [];
+
+      if (user.role === 'manager') {
+        accessGroupNames = MANAGER_ACCESS_GROUP_NAMES;
+      } else if (accessGroupName) {
+        accessGroupNames = [accessGroupName];
+      }
 
       for (const groupName of accessGroupNames) {
         await this.accessGroupsService.addUserToAccessGroupByName(body.user.id, groupName);

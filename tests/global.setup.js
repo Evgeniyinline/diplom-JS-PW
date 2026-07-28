@@ -85,20 +85,8 @@ export default async function globalSetup() {
       throw new Error('Admin storage state does not contain cookies');
     }
 
-    const managerData = new UserBuilder()
-      .withEmail()
-      .withValidPassword()
-      .withUserName()
-      .withUserSurname()
-      .withRole('manager')
-      .build();
-    const editProfileData = new UserBuilder()
-      .withEmail()
-      .withValidPassword()
-      .withUserName()
-      .withUserSurname()
-      .withRole('manager')
-      .build();
+    const managerData = new UserBuilder().build();
+    const editProfileData = new UserBuilder().build();
 
     const manager = await createUserWithRetry(adminApi, managerData);
 
