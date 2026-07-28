@@ -264,7 +264,7 @@ Workflow запускается на `push`, `pull_request` и вручную ч
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history;
-- отправляет результат запуска в Telegram через `qa-guru/allure-notifications` вместе с диаграммой прохождения тестов.
+- отправляет результат запуска в Telegram через `qa-guru/allure-notifications` вместе с диаграммой прохождения тестов и ссылкой на актуальные Release Notes.
 
 Allure Report доступен по ссылке:
 

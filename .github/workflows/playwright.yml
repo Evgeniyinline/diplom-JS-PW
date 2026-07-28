@@ -134,6 +134,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RELEASE_NOTES_URL: https://github.com/${{ github.repository }}/blob/${{ github.sha }}/RELEASE_NOTES.md
         run: |
           if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
             echo "Telegram secrets are not configured, skipping notification"
@@ -153,7 +154,7 @@ jobs:
             "-Dnotifications.base.enableSuitesPublishing=false" \
             "-Dnotifications.base.durationFormat=HH:mm:ss.SSS" \
             "-Dnotifications.base.reportLink=${ALLURE_REPORT_URL}" \
-            "-Dnotifications.base.comment=Allure TestOps: ${ALLURE_TESTOPS_URL} | Artifacts: ${RUN_URL}" \
+            "-Dnotifications.base.comment=Allure TestOps: ${ALLURE_TESTOPS_URL} | Release Notes: ${RELEASE_NOTES_URL} | Artifacts: ${RUN_URL}" \
             "-Dnotifications.base.customData.run=${GITHUB_RUN_NUMBER}" \
             "-Dnotifications.base.customData.repository=${GITHUB_REPOSITORY}" \
             "-Dnotifications.base.customData.branch=${GITHUB_REF_NAME}" \
