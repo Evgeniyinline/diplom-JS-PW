@@ -48,7 +48,7 @@ const durationReplacements = [
     customized: [
       'const DEFAULT_ARC = 10;',
       '// Project palette: API cyan, UI fuchsia, total green.',
-      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff", total: "#04c5c2ff" };',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#e12afb", total: "#94ca66" };',
     ].join('\n'),
   },
   {
@@ -163,7 +163,7 @@ const suitesReplacements = [
     ].join('\n'),
     customized: [
       'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
-      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff" };',
+      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#e12afb" };',
       'const RETRY_COLOR = "#ffce57";',
     ].join('\n'),
   },
@@ -193,6 +193,10 @@ const suitesReplacements = [
     customized: '    const labelWidth = isRetries ? Math.min(360, Math.floor(chartWidth / 2)) : Math.min(180, Math.floor(chartWidth / 3));',
   },
   {
+    original: '    const barAreaWidth = chartWidth - labelWidth - 40;',
+    customized: '    const barAreaWidth = chartWidth - labelWidth - (isRetries ? 40 : 150);',
+  },
+  {
     original: [
       '    ctx.font = `${layout.fontSize}px sans-serif`;',
       '    const ascent = layout.fontSize * 0.8;',
@@ -208,6 +212,16 @@ const suitesReplacements = [
   {
     original: '        const label = truncate(suite.name, 24);',
     customized: '        const label = truncate(suite.name, isRetries ? 42 : 24);',
+  },
+  {
+    original: '        ctx.fillText(String(suite.count), barX + barWidth + 6, baseline);',
+    customized: [
+      '        const quality = isRetries ? null : analytics.qualityByLayer?.[label.toLowerCase()];',
+      '        const valueLabel = quality',
+      '            ? `${quality.passed}/${quality.total} · ${quality.passRate.toFixed(1)}%`',
+      '            : String(suite.count);',
+      '        ctx.fillText(valueLabel, barX + barWidth + 6, baseline);',
+    ].join('\n'),
   },
 ];
 

@@ -65,14 +65,21 @@ jobs:
       - name: Prepare Allure history
         if: always()
         run: |
-          mkdir -p allure-results/history
-          if [ -d gh-pages/history ]; then
-            cp -r gh-pages/history/* allure-results/history/ || true
+          mkdir -p allure-history
+          if [ -f gh-pages/history.jsonl ]; then
+            cp gh-pages/history.jsonl allure-history/history.jsonl
           fi
 
       - name: Generate Allure report
         if: always()
         run: npx allure@latest generate ./allure-results --config ./allurerc.mjs --output ./allure-report
+
+      - name: Preserve Allure history
+        if: always()
+        run: |
+          if [ -f allure-history/history.jsonl ]; then
+            cp allure-history/history.jsonl allure-report/history.jsonl
+          fi
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

@@ -19,6 +19,8 @@
       "cardGap": 14,
       "gridCols": 10,
       "gridRows": 15,
+      "historyPath": "../allure-history/history.jsonl",
+      "historyLimit": 20,
       "items": [
         { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 7 },
         { "type": "suites", "x": 5, "y": 0, "w": 5, "h": 7 },

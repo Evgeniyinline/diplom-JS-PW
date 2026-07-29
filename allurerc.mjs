@@ -1,6 +1,7 @@
 export default {
   name: 'o2cloud calc dev',
   output: './allure-report',
+  historyPath: './allure-history/history.jsonl',
   plugins: {
     awesome: {
       options: {

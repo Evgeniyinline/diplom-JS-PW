@@ -1,5 +1,10 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const { loadNotificationMetrics } = require('./notification-metrics.js');
+const {
+  prepareCoreConfig,
+  renderExtendedNotification,
+} = require('./render-notification.js');
 
 function escapeHtml(value) {
   return String(value)
@@ -18,7 +23,8 @@ function addLink(lines, label, title, url) {
   }
 }
 
-function buildTelegramCaption(config, analytics) {
+// Собирает короткий текст Telegram и добавляет проблемные метрики только при их наличии.
+function buildTelegramCaption(config, analytics, metrics = null) {
   const base = config.base ?? {};
   const links = base.links ?? {};
   const statistic = analytics.statistic;
@@ -43,27 +49,54 @@ function buildTelegramCaption(config, analytics) {
   lines.push(`Упало: ${statistic.failed}`);
   lines.push(`Сломано: ${statistic.broken}`);
 
+  if ((metrics?.totals.skipped ?? statistic.skipped) > 0) {
+    lines.push(`Пропущено: ${metrics?.totals.skipped ?? statistic.skipped}`);
+  }
+
+  if ((metrics?.totals.flaky ?? 0) > 0) {
+    lines.push(`Нестабильно: ${metrics.totals.flaky} (${metrics.totals.flakyRate.toFixed(1)}%)`);
+  }
+
   return lines.join('\n');
 }
 
+// Загружает отчёт, строит PNG и отправляет его или сохраняет в dry-run режиме.
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
   const configPath = path.resolve(rootDir, process.argv[2] || 'notifications/config.runtime.json');
   const outputPath = path.resolve(rootDir, process.argv[3] || 'notifications/allure-notification.png');
+  const dryRun = process.argv.includes('--dry-run');
   const { loadConfigFile, resolveTelegramCredentials, sendTelegramPhoto } = await import('allure-notifications');
   const { loadReportAnalytics, renderCollagePng } = await import('@allure-notifications/core');
   const config = await loadConfigFile(configPath);
   const analytics = await loadReportAnalytics(config);
-  const png = await renderCollagePng(config, analytics);
+  const configDir = path.dirname(configPath);
+  const resultsDir = path.resolve(configDir, config.base.allureResultsFolder ?? '../allure-results');
+  const configuredHistoryPath = config.base.chart?.historyPath;
+  const historyPath = configuredHistoryPath
+    ? path.resolve(configDir, configuredHistoryPath)
+    : path.resolve(rootDir, 'allure-history/history.jsonl');
+  const metrics = await loadNotificationMetrics({ resultsDir, historyPath });
+  analytics.qualityByLayer = Object.fromEntries(
+    Object.entries(metrics.layers).map(([layer, value]) => [layer.toLowerCase(), value]),
+  );
+  const renderConfig = prepareCoreConfig(config, metrics);
+  const basePng = await renderCollagePng(renderConfig, analytics);
+  const png = await renderExtendedNotification({ basePng, config: renderConfig, metrics });
+  const caption = buildTelegramCaption(config, analytics, metrics);
+
+  await fs.writeFile(outputPath, png);
+
+  if (dryRun) {
+    console.log(`Telegram notification preview saved: ${outputPath}`);
+    return;
+  }
+
   const credentials = resolveTelegramCredentials({
     config,
     env: process.env,
     applyAdrDefaults: false,
   });
-  const caption = buildTelegramCaption(config, analytics);
-
-  await fs.writeFile(outputPath, png);
-
   const result = await sendTelegramPhoto({
     credentials,
     png,
