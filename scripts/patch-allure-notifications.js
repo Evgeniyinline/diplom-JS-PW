@@ -85,15 +85,16 @@ const durationReplacements = [
   },
   {
     original: '        ctx.fillText(avg.toFixed(1), barX + barWidth + 6, baseline);',
-    customized: '        ctx.fillText(`${avg.toFixed(1)} сек.`, barX + barWidth + 6, baseline);',
+    previous: '        ctx.fillText(`${avg.toFixed(1)} сек.`, barX + barWidth + 6, baseline);',
+    customized: '        ctx.fillText(`${avg.toFixed(1)} sec.`, barX + barWidth + 6, baseline);',
   },
 ];
 
 const collageReplacements = [
   {
     original: '            return "Durations by layer (s)";',
-    previous: '            return "Durations by layer (сек.)";',
-    customized: '            return "Средняя длительность (сек.)";',
+    previous: '            return "Средняя длительность (сек.)";',
+    customized: '            return "Average duration (sec.)";',
   },
   {
     original: [
@@ -102,6 +103,11 @@ const collageReplacements = [
       '    }',
     ].join('\n'),
     customized: [
+      '    if (key === PANEL_SUITES) {',
+      '        return item.groupBy?.trim().toLowerCase() === "retries" ? "Retries by layer" : "Suites";',
+      '    }',
+    ].join('\n'),
+    previous: [
       '    if (key === PANEL_SUITES) {',
       '        return item.groupBy?.trim().toLowerCase() === "retries" ? "Ретраи тестов" : "Suites";',
       '    }',
@@ -124,8 +130,8 @@ const suitesReplacements = [
   },
   {
     original: '        ctx.fillStyle = rgbCss(theme.accent);',
-    previous: '        ctx.fillStyle = CUSTOM_SUITE_COLORS[label.toLowerCase()] ?? rgbCss(theme.accent);',
-    customized: '        ctx.fillStyle = isRetries ? RETRY_COLOR : CUSTOM_SUITE_COLORS[label.toLowerCase()] ?? rgbCss(theme.accent);',
+    previous: '        ctx.fillStyle = isRetries ? RETRY_COLOR : CUSTOM_SUITE_COLORS[label.toLowerCase()] ?? rgbCss(theme.accent);',
+    customized: '        ctx.fillStyle = CUSTOM_SUITE_COLORS[label.toLowerCase()] ?? (isRetries ? RETRY_COLOR : rgbCss(theme.accent));',
   },
   {
     original: '    const { width, height, theme, analytics, showTitle } = context;',
@@ -140,7 +146,8 @@ const suitesReplacements = [
   },
   {
     original: '        ctx.fillText("No suite data", MARGIN, MARGIN + TITLE_HEIGHT + 16);',
-    customized: '        ctx.fillText(isRetries ? "Ретраев нет" : "No suite data", MARGIN, MARGIN + TITLE_HEIGHT + 16);',
+    previous: '        ctx.fillText(isRetries ? "Ретраев нет" : "No suite data", MARGIN, MARGIN + TITLE_HEIGHT + 16);',
+    customized: '        ctx.fillText(isRetries ? "No retries" : "No suite data", MARGIN, MARGIN + TITLE_HEIGHT + 16);',
   },
   {
     original: '    const labelWidth = Math.min(180, Math.floor(chartWidth / 3));',
@@ -168,7 +175,8 @@ const suitesReplacements = [
 const pieReplacements = [
   {
     original: '    const subText = `of ${total}`;',
-    customized: '    const subText = `из ${total}`;',
+    previous: '    const subText = `из ${total}`;',
+    customized: '    const subText = `of ${total}`;',
   },
 ];
 
@@ -189,20 +197,6 @@ const analyticsReplacements = [
       '    let hasLayerLabels = false;',
     ].join('\n'),
     previous: [
-      '    const stabilityCases = [];',
-      '    // Allure stores every retry as a result; charts need only the latest attempt.',
-      '    const latestResultsByHistory = new Map();',
-      '    for (const result of results) {',
-      '        const key = result.historyId ?? result.fullName ?? result.uuid;',
-      '        const previous = latestResultsByHistory.get(key);',
-      '        if (!previous || (result.stop ?? 0) >= (previous.stop ?? 0)) {',
-      '            latestResultsByHistory.set(key, result);',
-      '        }',
-      '    }',
-      '    const effectiveResults = Array.from(latestResultsByHistory.values());',
-      '    let hasLayerLabels = false;',
-    ].join('\n'),
-    customized: [
       '    const stabilityCases = [];',
       '    // Allure stores every retry as a result; charts need only the latest attempt.',
       '    const latestResultsByHistory = new Map();',
@@ -229,6 +223,38 @@ const analyticsReplacements = [
       '    })',
       '        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))',
       '        .slice(0, Math.max(topSuites, 0));',
+      '    let hasLayerLabels = false;',
+    ].join('\n'),
+    customized: [
+      '    const stabilityCases = [];',
+      '    // Allure stores every retry as a result; charts need only the latest attempt.',
+      '    const latestResultsByHistory = new Map();',
+      '    const attemptsByHistory = new Map();',
+      '    for (const result of results) {',
+      '        const key = result.historyId ?? result.fullName ?? result.uuid;',
+      '        const attempts = attemptsByHistory.get(key) ?? [];',
+      '        attempts.push(result);',
+      '        attemptsByHistory.set(key, attempts);',
+      '        const previous = latestResultsByHistory.get(key);',
+      '        if (!previous || (result.stop ?? 0) >= (previous.stop ?? 0)) {',
+      '            latestResultsByHistory.set(key, result);',
+      '        }',
+      '    }',
+      '    const effectiveResults = Array.from(latestResultsByHistory.values());',
+      '    const retryCountsByLayer = {};',
+      '    for (const [key, attempts] of attemptsByHistory) {',
+      '        if (attempts.length <= 1) {',
+      '            continue;',
+      '        }',
+      '        const latest = latestResultsByHistory.get(key);',
+      '        const layer = latest ? layerOf(latest) : null;',
+      '        const suite = latest ? suiteNameOf(latest) : null;',
+      '        const group = (layer ?? suite ?? "other").trim().toUpperCase();',
+      '        retryCountsByLayer[group] = (retryCountsByLayer[group] ?? 0) + attempts.length - 1;',
+      '    }',
+      '    const retries = Object.entries(retryCountsByLayer)',
+      '        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))',
+      '        .map(([name, count]) => ({ name, count }));',
       '    let hasLayerLabels = false;',
     ].join('\n'),
   },
