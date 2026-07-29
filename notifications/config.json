@@ -3,7 +3,7 @@
     "logo": "",
     "project": "o2cloud calc dev",
     "environment": "calc-dev",
-    "comment": "",
+    "comment": "Регресс",
     "language": "ru",
     "allureFolder": "../allure-report/",
     "allureResultsFolder": "../allure-results/",
@@ -21,8 +21,8 @@
       "gridRows": 10,
       "items": [
         { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 5 },
-        { "type": "testingPyramid", "x": 5, "y": 0, "w": 5, "h": 5 },
-        { "type": "durations", "x": 0, "y": 5, "w": 10, "h": 5 }
+        { "type": "suites", "x": 5, "y": 0, "w": 5, "h": 5 },
+        { "type": "durations", "x": 0, "y": 5, "w": 10, "h": 5, "groupBy": "layer" }
       ],
       "pyramidFallback": "suites"
     },
@@ -30,6 +30,7 @@
       "report": "",
       "dashboard": "",
       "testops": "",
+      "releaseNotes": "",
       "build": ""
     }
   },

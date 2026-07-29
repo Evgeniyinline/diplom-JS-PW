@@ -129,14 +129,14 @@ jobs:
             --arg build "$RUN_URL" \
             '.base.links.report = $report
               | .base.links.testops = $testops
+              | .base.links.releaseNotes = $releaseNotes
               | .base.links.build = $build
-              | .base.comment = ("Report: " + $report + " | TestOps: " + $testops + " | Release Notes: " + $releaseNotes + " | Artifacts: " + $build)' \
+              | .base.comment = "Регресс"' \
             notifications/config.json > notifications/config.runtime.json
 
-          npx allure-notifications send \
-            --config notifications/config.runtime.json \
-            --live \
-            --out notifications/allure-notification.png
+          npm run allure:notify:send -- \
+            notifications/config.runtime.json \
+            notifications/allure-notification.png
 
       - name: Upload Telegram notification preview
         uses: actions/upload-artifact@v4

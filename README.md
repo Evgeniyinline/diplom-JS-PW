@@ -264,7 +264,7 @@ Workflow запускается на `push`, `pull_request` и вручную ч
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history;
-- отправляет результат запуска в Telegram через TypeScript CLI `allure-notifications 6.0.8` вместе с коллажем, ссылками на отчёт, TestOps, Release Notes и GitHub Actions;
+- отправляет результат запуска в Telegram через `allure-notifications 6.0.8` вместе с коллажем и отдельными ссылками на отчёт, TestOps, Release Notes и GitHub Actions;
 - сохраняет PNG уведомления как artifact для диагностики оформления.
 
 Allure Report доступен по ссылке:

@@ -1,4 +1,5 @@
 import { test as base, request as apiRequest } from "@playwright/test";
+import * as allure from "allure-js-commons";
 import { App } from "@/pages/app.page.js";
 import { AuthFacade } from "@/helpers/facades/auth.facade.js";
 import { ProfileFacade } from "@/helpers/facades/profile.facade.js";
@@ -15,6 +16,16 @@ import {
 } from "@/helpers/auth/admin-storage-state.js";
 
 export const test = base.extend({
+
+  // Единая группировка для Allure notifications: API и UI.
+  allureGroup: [async ({}, use, testInfo) => {
+    const normalizedFile = testInfo.file.replaceAll('\\', '/');
+    const group = normalizedFile.includes('/tests/api/') ? 'API' : 'UI';
+
+    await allure.parentSuite(group);
+    await allure.label('layer', group.toLowerCase());
+    await use();
+  }, { auto: true }],
 
 // storage менеджера готовится один раз в globalSetup и переиспользуется worker'ами
   managerStorageState: [async ({}, use) => {
