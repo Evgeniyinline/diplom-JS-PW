@@ -34,7 +34,7 @@
 - Allure Report 3 для локальных и GitHub Pages отчётов;
 - Allure TestOps для хранения запусков;
 - GitHub Actions для CI;
-- qa-guru/allure-notifications для Telegram-уведомлений с диаграммой прохождения тестов.
+- qa-guru/allure-notifications 6 для Telegram-уведомлений с настраиваемым коллажем результатов.
 
 ## Что покрыто
 
@@ -264,7 +264,8 @@ Workflow запускается на `push`, `pull_request` и вручную ч
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history;
-- отправляет результат запуска в Telegram через `qa-guru/allure-notifications` вместе с диаграммой прохождения тестов и ссылкой на актуальные Release Notes.
+- отправляет результат запуска в Telegram через TypeScript CLI `allure-notifications 6.0.8` вместе с коллажем, ссылками на отчёт, TestOps, Release Notes и GitHub Actions;
+- сохраняет PNG уведомления как artifact для диагностики оформления.
 
 Allure Report доступен по ссылке:
 
@@ -277,6 +278,12 @@ https://evgeniyinline.github.io/diplom-JS-PW/
 ```text
 TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
+```
+
+Конфигурация коллажа находится в `notifications/config.json`. Локально её можно проверить без отправки сообщения:
+
+```bash
+npm run allure:notify:dry
 ```
 
 Для отправки результатов в Allure TestOps используется проект:

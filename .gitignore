@@ -12,6 +12,8 @@ node_modules/
 /allure-report/
 /allure-results/
 /notifications/*.jar
+/notifications/*.png
+/notifications/config.runtime.json
 /widgets/
 
 # Test runtime artifacts
