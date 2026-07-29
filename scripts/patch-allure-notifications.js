@@ -159,11 +159,11 @@ const suitesReplacements = [
     original: 'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
     previous: [
       'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
-      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#e12afb" };',
+      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff };',
     ].join('\n'),
     customized: [
       'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
-      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#e12afb" };',
+      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff" };',
       'const RETRY_COLOR = "#ffce57";',
     ].join('\n'),
   },
