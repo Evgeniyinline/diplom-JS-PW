@@ -1,13 +1,17 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
-const { renderExtendedNotification } = require('./render-notification.js');
+const {
+  prepareSummaryConfig,
+  renderNotificationImages,
+} = require('./render-notification.js');
 
-// Создаёт демонстрационный PNG со всеми проблемными панелями без запуска тестов.
+// Создаёт две демонстрационные картинки без запуска тестов и отправки в Telegram.
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
   const config = JSON.parse(await fs.readFile(path.join(rootDir, 'notifications/config.json'), 'utf8'));
-  const outputPath = path.join(rootDir, 'notifications/allure-notification-preview.png');
+  const summaryPath = path.join(rootDir, 'notifications/allure-summary-preview.png');
+  const detailsPath = path.join(rootDir, 'notifications/allure-details-preview.png');
   const { renderCollagePng } = await import('@allure-notifications/core');
   const metrics = {
     layers: {
@@ -49,10 +53,19 @@ async function main() {
     },
   };
 
-  const basePng = await renderCollagePng(config, analytics);
-  const png = await renderExtendedNotification({ basePng, config, metrics });
-  await fs.writeFile(outputPath, png);
-  console.log(`Notification preview saved: ${outputPath}`);
+  const renderConfig = prepareSummaryConfig(config);
+  const basePng = await renderCollagePng(renderConfig, analytics);
+  const { summaryPng, detailsPng } = await renderNotificationImages({
+    basePng,
+    config: renderConfig,
+    metrics,
+  });
+  await Promise.all([
+    fs.writeFile(summaryPath, summaryPng),
+    fs.writeFile(detailsPath, detailsPng),
+  ]);
+  console.log(`Summary preview saved: ${summaryPath}`);
+  console.log(`Details preview saved: ${detailsPath}`);
 }
 
 main().catch((error) => {

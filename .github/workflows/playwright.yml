@@ -143,13 +143,16 @@ jobs:
 
           npm run allure:notify:send -- \
             notifications/config.runtime.json \
-            notifications/allure-notification.png
+            notifications/allure-summary.png \
+            notifications/allure-details.png
 
       - name: Upload Telegram notification preview
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-notification
-          path: notifications/allure-notification.png
+          path: |
+            notifications/allure-summary.png
+            notifications/allure-details.png
           if-no-files-found: ignore
           retention-days: 30

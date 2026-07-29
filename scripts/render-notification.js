@@ -229,12 +229,12 @@ function drawCountRows({ ctx, x, y, width, height }, rows, emptyText) {
   });
 }
 
-// Убирает пустую панель ретраев и уменьшает высоту основной картинки.
-function prepareCoreConfig(config, metrics) {
+// Оставляет в первой картинке только краткую сводку и уменьшает её высоту.
+function prepareSummaryConfig(config) {
   const prepared = JSON.parse(JSON.stringify(config));
   const chart = prepared.base?.chart;
 
-  if (!chart?.items || metrics.totals.retries > 0) {
+  if (!chart?.items) {
     return prepared;
   }
 
@@ -247,37 +247,20 @@ function prepareCoreConfig(config, metrics) {
   return prepared;
 }
 
-// Добавляет наши карточки снизу к стандартному коллажу Allure Notifications.
-async function renderExtendedNotification({ basePng, config, metrics }) {
-  const { createCanvas, loadImage } = await import('@napi-rs/canvas');
-  const width = config.base.chart?.width ?? 870;
+// Собирает строки ретраев отдельно по UI и API.
+function retryRows(metrics) {
+  return Object.entries(metrics.layers)
+    .filter(([, stats]) => stats.retries > 0)
+    .map(([layer, stats]) => ({
+      name: layer,
+      count: stats.retries,
+      color: colorForLayer(layer),
+    }));
+}
+
+// Добавляет набор карточек под уже готовой картинкой.
+async function appendCardsToImage({ basePng, width, cards, createCanvas, loadImage }) {
   const baseImage = await loadImage(basePng);
-  const cards = [
-    { title: 'Run timing', height: 190, draw: (body) => drawTimingBody(body, metrics) },
-    { title: 'Slowest tests', height: 300, draw: (body) => drawSlowTestsBody(body, metrics) },
-  ];
-  const signals = stabilityRows(metrics);
-
-  if (signals.length > 0) {
-    cards.push({
-      title: 'Stability signals',
-      height: Math.max(190, HEADER_HEIGHT + 50 + signals.length * 48),
-      draw: (body) => drawCountRows(body, signals, 'No stability signals'),
-    });
-  }
-
-  if (metrics.failureCategories.length > 0) {
-    cards.push({
-      title: 'Failure categories',
-      height: Math.max(190, HEADER_HEIGHT + 50 + metrics.failureCategories.length * 48),
-      draw: (body) => drawCountRows(
-        body,
-        metrics.failureCategories.map((row) => ({ ...row, color: COLORS.failed })),
-        'No failures',
-      ),
-    });
-  }
-
   const extraHeight = cards.reduce((sum, card) => sum + card.height + CARD_GAP, 0);
   const canvas = createCanvas(width, baseImage.height + extraHeight);
   const ctx = canvas.getContext('2d');
@@ -294,10 +277,85 @@ async function renderExtendedNotification({ basePng, config, metrics }) {
   return canvas.toBuffer('image/png');
 }
 
+// Рисует отдельную картинку только с диагностическими карточками.
+function renderCardsImage({ width, cards, createCanvas }) {
+  const height = CARD_GAP + cards.reduce((sum, card) => sum + card.height + CARD_GAP, 0);
+  const canvas = createCanvas(width, height);
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = COLORS.outer;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let top = CARD_GAP;
+  for (const card of cards) {
+    drawCard(ctx, CARD_GAP, top, width - CARD_GAP * 2, card.height, card.title, card.draw);
+    top += card.height + CARD_GAP;
+  }
+
+  return canvas.toBuffer('image/png');
+}
+
+// Делит длинное уведомление на краткую сводку и подробную диагностику.
+async function renderNotificationImages({ basePng, config, metrics }) {
+  const { createCanvas, loadImage } = await import('@napi-rs/canvas');
+  const width = config.base.chart?.width ?? 870;
+  const summaryCards = [
+    { title: 'Run timing', height: 190, draw: (body) => drawTimingBody(body, metrics) },
+  ];
+  const detailCards = [];
+  const retries = retryRows(metrics);
+  const signals = stabilityRows(metrics);
+
+  if (retries.length > 0) {
+    detailCards.push({
+      title: 'Retries by layer',
+      height: Math.max(190, HEADER_HEIGHT + 50 + retries.length * 48),
+      draw: (body) => drawCountRows(body, retries, 'No retries'),
+    });
+  }
+
+  if (signals.length > 0) {
+    detailCards.push({
+      title: 'Stability signals',
+      height: Math.max(190, HEADER_HEIGHT + 50 + signals.length * 48),
+      draw: (body) => drawCountRows(body, signals, 'No stability signals'),
+    });
+  }
+
+  detailCards.push({
+    title: 'Slowest tests',
+    height: 300,
+    draw: (body) => drawSlowTestsBody(body, metrics),
+  });
+
+  if (metrics.failureCategories.length > 0) {
+    detailCards.push({
+      title: 'Failure categories',
+      height: Math.max(190, HEADER_HEIGHT + 50 + metrics.failureCategories.length * 48),
+      draw: (body) => drawCountRows(
+        body,
+        metrics.failureCategories.map((row) => ({ ...row, color: COLORS.failed })),
+        'No failures',
+      ),
+    });
+  }
+
+  const summaryPng = await appendCardsToImage({
+    basePng,
+    width,
+    cards: summaryCards,
+    createCanvas,
+    loadImage,
+  });
+  const detailsPng = renderCardsImage({ width, cards: detailCards, createCanvas });
+
+  return { summaryPng, detailsPng };
+}
+
 module.exports = {
   formatDelta,
   formatDuration,
-  prepareCoreConfig,
-  renderExtendedNotification,
+  prepareSummaryConfig,
+  renderNotificationImages,
+  retryRows,
   stabilityRows,
 };

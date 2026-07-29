@@ -2,8 +2,8 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { loadNotificationMetrics } = require('./notification-metrics.js');
 const {
-  prepareCoreConfig,
-  renderExtendedNotification,
+  prepareSummaryConfig,
+  renderNotificationImages,
 } = require('./render-notification.js');
 
 function escapeHtml(value) {
@@ -60,13 +60,58 @@ function buildTelegramCaption(config, analytics, metrics = null) {
   return lines.join('\n');
 }
 
-// Загружает отчёт, строит PNG и отправляет его или сохраняет в dry-run режиме.
+// Отправляет две картинки одним Telegram-альбомом и ставит подпись под первой.
+async function sendTelegramMediaGroup({ credentials, summaryPng, detailsPng, caption, fetchImpl = fetch }) {
+  const form = new FormData();
+  const media = [
+    {
+      type: 'photo',
+      media: 'attach://summary',
+      caption,
+      parse_mode: 'HTML',
+    },
+    {
+      type: 'photo',
+      media: 'attach://details',
+    },
+  ];
+
+  form.set('chat_id', String(credentials.chat));
+  form.set('media', JSON.stringify(media));
+  form.set('summary', new Blob([summaryPng], { type: 'image/png' }), 'allure-summary.png');
+  form.set('details', new Blob([detailsPng], { type: 'image/png' }), 'allure-details.png');
+
+  if (credentials.topic) {
+    form.set('message_thread_id', String(credentials.topic));
+  }
+
+  if (credentials.replyTo) {
+    form.set('reply_parameters', JSON.stringify({ message_id: Number(credentials.replyTo) }));
+  }
+
+  const response = await fetchImpl(
+    `https://api.telegram.org/bot${credentials.token}/sendMediaGroup`,
+    { method: 'POST', body: form },
+  );
+  const body = await response.json();
+
+  if (!response.ok || !body.ok || !Array.isArray(body.result) || body.result.length !== 2) {
+    throw new Error(`Telegram sendMediaGroup failed: ${body.description ?? response.status}`);
+  }
+
+  return {
+    messageIds: body.result.map((message) => message.message_id),
+  };
+}
+
+// Загружает отчёт, строит два PNG и отправляет их или сохраняет в dry-run режиме.
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
   const configPath = path.resolve(rootDir, process.argv[2] || 'notifications/config.runtime.json');
-  const outputPath = path.resolve(rootDir, process.argv[3] || 'notifications/allure-notification.png');
+  const summaryPath = path.resolve(rootDir, process.argv[3] || 'notifications/allure-summary.png');
+  const detailsPath = path.resolve(rootDir, process.argv[4] || 'notifications/allure-details.png');
   const dryRun = process.argv.includes('--dry-run');
-  const { loadConfigFile, resolveTelegramCredentials, sendTelegramPhoto } = await import('allure-notifications');
+  const { loadConfigFile, resolveTelegramCredentials } = await import('allure-notifications');
   const { loadReportAnalytics, renderCollagePng } = await import('@allure-notifications/core');
   const config = await loadConfigFile(configPath);
   const analytics = await loadReportAnalytics(config);
@@ -80,15 +125,23 @@ async function main() {
   analytics.qualityByLayer = Object.fromEntries(
     Object.entries(metrics.layers).map(([layer, value]) => [layer.toLowerCase(), value]),
   );
-  const renderConfig = prepareCoreConfig(config, metrics);
+  const renderConfig = prepareSummaryConfig(config);
   const basePng = await renderCollagePng(renderConfig, analytics);
-  const png = await renderExtendedNotification({ basePng, config: renderConfig, metrics });
+  const { summaryPng, detailsPng } = await renderNotificationImages({
+    basePng,
+    config: renderConfig,
+    metrics,
+  });
   const caption = buildTelegramCaption(config, analytics, metrics);
 
-  await fs.writeFile(outputPath, png);
+  await Promise.all([
+    fs.writeFile(summaryPath, summaryPng),
+    fs.writeFile(detailsPath, detailsPng),
+  ]);
 
   if (dryRun) {
-    console.log(`Telegram notification preview saved: ${outputPath}`);
+    console.log(`Telegram summary preview saved: ${summaryPath}`);
+    console.log(`Telegram details preview saved: ${detailsPath}`);
     return;
   }
 
@@ -97,16 +150,17 @@ async function main() {
     env: process.env,
     applyAdrDefaults: false,
   });
-  const result = await sendTelegramPhoto({
+  const result = await sendTelegramMediaGroup({
     credentials,
-    png,
+    summaryPng,
+    detailsPng,
     caption,
   });
 
-  console.log(`Telegram notification sent: message_id=${result.messageId}`);
+  console.log(`Telegram notification album sent: message_ids=${result.messageIds.join(',')}`);
 }
 
-module.exports = { buildTelegramCaption };
+module.exports = { buildTelegramCaption, sendTelegramMediaGroup };
 
 if (require.main === module) {
   main().catch((error) => {

@@ -5,10 +5,14 @@ const path = require('node:path');
 const test = require('node:test');
 
 const { loadNotificationMetrics } = require('../../scripts/notification-metrics.js');
-const { buildTelegramCaption } = require('../../scripts/send-allure-notification.js');
+const {
+  buildTelegramCaption,
+  sendTelegramMediaGroup,
+} = require('../../scripts/send-allure-notification.js');
 const {
   formatDelta,
-  prepareCoreConfig,
+  prepareSummaryConfig,
+  retryRows,
   stabilityRows,
 } = require('../../scripts/render-notification.js');
 
@@ -97,7 +101,7 @@ test('adds skipped and flaky counters to Telegram caption only when needed', () 
   assert.match(caption, /Нестабильно: 1 \(25\.0%\)/);
 });
 
-test('removes empty retries panel and compacts base collage', () => {
+test('moves retries out of summary and compacts base collage', () => {
   const config = {
     base: {
       chart: {
@@ -110,10 +114,73 @@ test('removes empty retries panel and compacts base collage', () => {
       },
     },
   };
-  const prepared = prepareCoreConfig(config, { totals: { retries: 0 } });
+  const prepared = prepareSummaryConfig(config);
 
   assert.equal(prepared.base.chart.height, 960);
   assert.equal(prepared.base.chart.gridRows, 12);
   assert.deepEqual(prepared.base.chart.items, [{ type: 'pie' }]);
   assert.equal(config.base.chart.items.length, 2);
+});
+
+test('builds retry rows for layers that actually had retries', () => {
+  const rows = retryRows({
+    layers: {
+      UI: { retries: 2 },
+      API: { retries: 0 },
+    },
+  });
+
+  assert.deepEqual(rows, [{ name: 'UI', count: 2, color: '#e12afb' }]);
+});
+
+test('sends summary and details as one Telegram media group', async () => {
+  let request;
+  const fetchImpl = async (url, options) => {
+    request = { url, options };
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ok: true,
+        result: [
+          { message_id: 101 },
+          { message_id: 102 },
+        ],
+      }),
+    };
+  };
+
+  const result = await sendTelegramMediaGroup({
+    credentials: {
+      token: 'test-token',
+      chat: '-100123',
+      topic: '7',
+      replyTo: '55',
+    },
+    summaryPng: Buffer.from('summary'),
+    detailsPng: Buffer.from('details'),
+    caption: '<b>Regression</b>',
+    fetchImpl,
+  });
+
+  assert.equal(request.url, 'https://api.telegram.org/bottest-token/sendMediaGroup');
+  assert.equal(request.options.method, 'POST');
+  assert.equal(request.options.body.get('chat_id'), '-100123');
+  assert.equal(request.options.body.get('message_thread_id'), '7');
+  assert.equal(request.options.body.get('reply_parameters'), JSON.stringify({ message_id: 55 }));
+  assert.equal(request.options.body.get('summary').name, 'allure-summary.png');
+  assert.equal(request.options.body.get('details').name, 'allure-details.png');
+  assert.deepEqual(JSON.parse(request.options.body.get('media')), [
+    {
+      type: 'photo',
+      media: 'attach://summary',
+      caption: '<b>Regression</b>',
+      parse_mode: 'HTML',
+    },
+    {
+      type: 'photo',
+      media: 'attach://details',
+    },
+  ]);
+  assert.deepEqual(result.messageIds, [101, 102]);
 });

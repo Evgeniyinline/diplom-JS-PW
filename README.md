@@ -264,10 +264,11 @@ Workflow запускается на `push`, `pull_request` и вручную ч
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history;
-- отправляет результат запуска в Telegram через `allure-notifications 6.0.8` вместе с коллажем и отдельными ссылками на отчёт, TestOps, Release Notes и GitHub Actions;
-- показывает pass rate по UI/API, фактическое время запуска, изменение длительности, самые медленные тесты, flaky/skipped и категории ошибок;
+- отправляет результат запуска в Telegram через `allure-notifications 6.0.8` альбомом из двух изображений и добавляет ссылки на отчёт, TestOps, Release Notes и GitHub Actions;
+- на первом изображении показывает итог прогона, pass rate по UI/API, общую длительность и фактическое время запуска;
+- на втором изображении показывает ретраи, flaky/skipped, самые медленные тесты и категории ошибок;
 - скрывает пустые панели ретраев, нестабильности и ошибок;
-- сохраняет PNG уведомления как artifact для диагностики оформления.
+- сохраняет оба PNG (`allure-summary.png` и `allure-details.png`) как artifact для диагностики оформления.
 
 Allure Report доступен по ссылке:
 
@@ -288,11 +289,14 @@ TELEGRAM_CHAT_ID
 npm run allure:notify:dry
 ```
 
-Сгенерировать согласованный демонстрационный пример со всеми проблемными панелями:
+Сгенерировать согласованный демонстрационный пример из краткой и подробной картинок:
 
 ```bash
 npm run allure:notify:preview
 ```
+
+Команда создаёт `notifications/allure-summary-preview.png` и
+`notifications/allure-details-preview.png`.
 
 Проверить расчёт метрик:
 
