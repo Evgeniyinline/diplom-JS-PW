@@ -202,8 +202,14 @@ const suitesReplacements = [
       '    const ascent = layout.fontSize * 0.8;',
       '    const descent = layout.fontSize * 0.2;',
     ].join('\n'),
-    customized: [
+    previous: [
       '    const fontSize = isRetries ? 18 : layout.fontSize;',
+      '    ctx.font = `${fontSize}px sans-serif`;',
+      '    const ascent = fontSize * 0.8;',
+      '    const descent = fontSize * 0.2;',
+    ].join('\n'),
+    customized: [
+      '    const fontSize = isRetries ? 18 : 20;',
       '    ctx.font = `${fontSize}px sans-serif`;',
       '    const ascent = fontSize * 0.8;',
       '    const descent = fontSize * 0.2;',
