@@ -43,12 +43,12 @@ const durationReplacements = [
     previous: [
       'const DEFAULT_ARC = 10;',
       '// Project palette: API cyan, UI fuchsia.',
-      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#e12afb" };',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff"" };',
     ].join('\n'),
     customized: [
       'const DEFAULT_ARC = 10;',
       '// Project palette: API cyan, UI fuchsia, total green.',
-      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff", total: "#94ca66" };',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff", total: "#04c5c2ff" };',
     ].join('\n'),
   },
   {
