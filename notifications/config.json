@@ -14,15 +14,16 @@
       "mode": "collage",
       "layout": "free",
       "width": 870,
-      "height": 1080,
+      "height": 1200,
       "headerHeight": 68,
       "cardGap": 14,
       "gridCols": 10,
-      "gridRows": 10,
+      "gridRows": 15,
       "items": [
-        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 5 },
-        { "type": "suites", "x": 5, "y": 0, "w": 5, "h": 5 },
-        { "type": "durations", "x": 0, "y": 5, "w": 10, "h": 5, "groupBy": "layer" }
+        { "type": "pie", "x": 0, "y": 0, "w": 5, "h": 7 },
+        { "type": "suites", "x": 5, "y": 0, "w": 5, "h": 7 },
+        { "type": "durations", "x": 0, "y": 7, "w": 10, "h": 5, "groupBy": "layer" },
+        { "type": "suites", "x": 0, "y": 12, "w": 10, "h": 3, "groupBy": "retries" }
       ],
       "pyramidFallback": "suites"
     },

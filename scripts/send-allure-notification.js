@@ -38,12 +38,10 @@ function buildTelegramCaption(config, analytics) {
   addLink(lines, 'Release Notes', 'посмотреть изменения', links.releaseNotes);
   addLink(lines, 'Artifacts', 'GitHub Actions', links.build);
   lines.push('');
-  lines.push(
-    `<b>Всего:</b> ${statistic.total} · `
-      + `пройдено ${statistic.passed} · `
-      + `упало ${statistic.failed} · `
-      + `сломано ${statistic.broken}`,
-  );
+  lines.push(`<b>Всего:</b> ${statistic.total}`);
+  lines.push(`Пройдено: ${statistic.passed}`);
+  lines.push(`Упало: ${statistic.failed}`);
+  lines.push(`Сломано: ${statistic.broken}`);
 
   return lines.join('\n');
 }
