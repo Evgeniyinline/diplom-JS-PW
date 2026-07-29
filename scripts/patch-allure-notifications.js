@@ -31,15 +31,24 @@ const supportedVersion = '6.0.8';
 
 const durationReplacements = [
   {
+    original: 'function averageSecondsByLayer(byLayer) {',
+    customized: 'function totalSecondsByLayer(byLayer) {',
+  },
+  {
     original: '    const barAreaWidth = Math.max(1, chartWidth - labelWidth - 48);',
     customized: '    const barAreaWidth = Math.max(1, chartWidth - labelWidth - 130);',
   },
   {
     original: 'const DEFAULT_ARC = 10;',
-    customized: [
+    previous: [
       'const DEFAULT_ARC = 10;',
       '// Project palette: API cyan, UI fuchsia.',
       'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#e12afb" };',
+    ].join('\n'),
+    customized: [
+      'const DEFAULT_ARC = 10;',
+      '// Project palette: API cyan, UI fuchsia, total green.',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#e12afb", total: "#94ca66" };',
     ].join('\n'),
   },
   {
@@ -88,13 +97,43 @@ const durationReplacements = [
     previous: '        ctx.fillText(`${avg.toFixed(1)} сек.`, barX + barWidth + 6, baseline);',
     customized: '        ctx.fillText(`${avg.toFixed(1)} sec.`, barX + barWidth + 6, baseline);',
   },
+  {
+    original: '        averages.set(key, sum / samples.length / 1000);',
+    customized: '        averages.set(key, sum / 1000);',
+  },
+  {
+    original: [
+      '    return averages;',
+      '}',
+    ].join('\n'),
+    customized: [
+      '    const total = Array.from(averages.values()).reduce((sum, value) => sum + value, 0);',
+      '    if (averages.size > 0) {',
+      '        averages.set("total", total);',
+      '    }',
+      '    return averages;',
+      '}',
+    ].join('\n'),
+  },
+  {
+    original: [
+      '        const avg = averageSecondsByLayer(analytics.durationsMsByLayer);',
+      '        if (avg.size > 0) {',
+      '            drawLayerAverages(ctx, theme, width, height, showTitle, avg);',
+    ].join('\n'),
+    customized: [
+      '        const totals = totalSecondsByLayer(analytics.durationsMsByLayer);',
+      '        if (totals.size > 0) {',
+      '            drawLayerAverages(ctx, theme, width, height, showTitle, totals);',
+    ].join('\n'),
+  },
 ];
 
 const collageReplacements = [
   {
     original: '            return "Durations by layer (s)";',
-    previous: '            return "Средняя длительность (сек.)";',
-    customized: '            return "Average duration (sec.)";',
+    previous: '            return "Average duration (sec.)";',
+    customized: '            return "Total duration (sec.)";',
   },
   {
     original: [
