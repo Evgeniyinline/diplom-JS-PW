@@ -42,13 +42,13 @@ const durationReplacements = [
     original: 'const DEFAULT_ARC = 10;',
     previous: [
       'const DEFAULT_ARC = 10;',
-      '// Project palette: API cyan, UI fuchsia.',
-      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff"" };',
+      '// Project palette: API cyan, UI fuchsia, total green.',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff, total: "#43e0aeff" };',
     ].join('\n'),
     customized: [
       'const DEFAULT_ARC = 10;',
       '// Project palette: API cyan, UI fuchsia, total green.',
-      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff, total: "#43e0aeff" };',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff", total: "#43e0ae" };',
     ].join('\n'),
   },
   {
@@ -160,10 +160,11 @@ const suitesReplacements = [
     previous: [
       'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
       'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff };',
+      'const RETRY_COLOR = "#ffce57";',
     ].join('\n'),
     customized: [
       'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
-      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff };',
+      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff" };',
       'const RETRY_COLOR = "#ffce57";',
     ].join('\n'),
   },
@@ -352,10 +353,12 @@ function patchFile(filePath, replacements) {
       continue;
     }
 
-    const current = source.includes(original)
-      ? original
-      : previous && source.includes(previous)
-        ? previous
+    // Сначала исправляем старую кастомизацию целиком, чтобы короткий исходный фрагмент
+    // не оставил рядом повреждённый или продублированный код.
+    const current = previous && source.includes(previous)
+      ? previous
+      : source.includes(original)
+        ? original
         : null;
 
     if (!current) {
