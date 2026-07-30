@@ -48,7 +48,7 @@ const durationReplacements = [
     customized: [
       'const DEFAULT_ARC = 10;',
       '// Project palette: API cyan, UI fuchsia, total green.',
-      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#e12afb", total: "#94ca66" };',
+      'const CUSTOM_LAYER_COLORS = { api: "#00b8db", ui: "#8e51ff, total: "#43e0aeff" };',
     ].join('\n'),
   },
   {
@@ -163,7 +163,7 @@ const suitesReplacements = [
     ].join('\n'),
     customized: [
       'import { MARGIN, TITLE_HEIGHT, fillPill, horizontalBarRowsLayout, } from "./bars.js";',
-      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#e12afb" };',
+      'const CUSTOM_SUITE_COLORS = { api: "#00b8db", ui: "#8e51ff };',
       'const RETRY_COLOR = "#ffce57";',
     ].join('\n'),
   },
