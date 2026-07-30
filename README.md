@@ -11,6 +11,7 @@
 - GitHub Actions: https://github.com/Evgeniyinline/diplom-JS-PW/actions
 - Allure Report: https://evgeniyinline.github.io/diplom-JS-PW/
 - Allure TestOps: https://allure.autotests.cloud/project/5230/launches
+- Тест-план: [актуальное покрытие UI и API](test-plan.md)
 - Release Notes: [обновление от 28.07.2026](RELEASE_NOTES.md)
 
 ## Стек
@@ -34,7 +35,7 @@
 - Allure Report 3 для локальных и GitHub Pages отчётов;
 - Allure TestOps для хранения запусков;
 - GitHub Actions для CI;
-- qa-guru/allure-notifications для Telegram-уведомлений с диаграммой прохождения тестов.
+- qa-guru/allure-notifications 6 для Telegram-уведомлений с настраиваемым коллажем результатов.
 
 ## Что покрыто
 
@@ -264,7 +265,11 @@ Workflow запускается на `push`, `pull_request` и вручную ч
 - генерирует Allure Report;
 - сохраняет Allure Report как artifact;
 - публикует Allure Report в GitHub Pages с сохранением history;
-- отправляет результат запуска в Telegram через `qa-guru/allure-notifications` вместе с диаграммой прохождения тестов и ссылкой на актуальные Release Notes.
+- отправляет результат запуска в Telegram через `allure-notifications 6.0.8` альбомом из двух изображений и добавляет ссылки на отчёт, TestOps, Release Notes и GitHub Actions;
+- на первом изображении показывает итог прогона, pass rate по UI/API, общую длительность и фактическое время запуска;
+- на втором изображении показывает ретраи, flaky/skipped, самые медленные тесты и категории ошибок;
+- скрывает пустые панели ретраев, нестабильности и ошибок;
+- сохраняет оба PNG (`allure-summary.png` и `allure-details.png`) как artifact для диагностики оформления.
 
 Allure Report доступен по ссылке:
 
@@ -277,6 +282,27 @@ https://evgeniyinline.github.io/diplom-JS-PW/
 ```text
 TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
+```
+
+Конфигурация коллажа находится в `notifications/config.json`. Локально её можно проверить без отправки сообщения:
+
+```bash
+npm run allure:notify:dry
+```
+
+Сгенерировать согласованный демонстрационный пример из краткой и подробной картинок:
+
+```bash
+npm run allure:notify:preview
+```
+
+Команда создаёт `notifications/allure-summary-preview.png` и
+`notifications/allure-details-preview.png`.
+
+Проверить расчёт метрик:
+
+```bash
+npm run test:notification
 ```
 
 Для отправки результатов в Allure TestOps используется проект:
