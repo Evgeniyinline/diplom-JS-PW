@@ -1,1 +1,1 @@
-{"id":"8570040692dde652887de53735b31483","fullName":"ui/auth/auth.spec.js:43:5","name":"Выход завершает сессию и закрывает защищённые страницы","status":"passed","testResultsByEnv":{"default":"bf6d01e0218b724b0500543950c60e5f"}}
+{"id":"8570040692dde652887de53735b31483","fullName":"ui/auth/auth.spec.js:43:5","name":"Выход завершает сессию и закрывает защищённые страницы","status":"passed","testResultsByEnv":{"default":"59e2ba59d7cf5fda0fe03092d121323e"}}
