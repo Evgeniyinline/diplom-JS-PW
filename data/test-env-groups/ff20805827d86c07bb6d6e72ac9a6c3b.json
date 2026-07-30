@@ -1,1 +1,1 @@
-{"id":"ff20805827d86c07bb6d6e72ac9a6c3b","fullName":"api/users/users.spec.js:61:7","name":"@POST @GET @DELETE Загрузить и удалить аватар и подпись,проверка что данные не остаются","status":"passed","testResultsByEnv":{"default":"1a43771ec922baa7e47333b63155f640"}}
+{"id":"ff20805827d86c07bb6d6e72ac9a6c3b","fullName":"api/users/users.spec.js:61:7","name":"@POST @GET @DELETE Загрузить и удалить аватар и подпись,проверка что данные не остаются","status":"passed","testResultsByEnv":{"default":"6afb82c59f37331145e8170dd581da51"}}
