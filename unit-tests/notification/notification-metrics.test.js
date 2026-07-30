@@ -92,7 +92,11 @@ test('calculates quality, flaky, skipped, timing and failure categories', async 
   assert.deepEqual(metrics.failureCategories, [{ name: 'Timeout', count: 1 }]);
   assert.equal(metrics.slowestTests[0].name, 'Delete user');
   assert.equal(stabilityRows(metrics).length, 2);
-  assert.equal(formatDelta(metrics), '+3.0s (+25.0%)');
+  assert.equal(formatDelta(metrics), '+3.0s (↑25.0%)');
+  assert.equal(formatDelta({
+    durationDeltaMs: -3000,
+    durationDeltaPercent: -25,
+  }), '−3.0s (↓25.0%)');
 });
 
 // Защищает вертикальные переносы и дополнительные строки в подписи Telegram.

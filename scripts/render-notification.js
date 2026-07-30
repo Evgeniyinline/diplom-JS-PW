@@ -76,9 +76,38 @@ function formatDelta(metrics) {
   }
 
   const sign = metrics.durationDeltaMs > 0 ? '+' : metrics.durationDeltaMs < 0 ? '−' : '';
+  const arrow = metrics.durationDeltaMs > 0 ? '↑' : metrics.durationDeltaMs < 0 ? '↓' : '';
   const duration = formatDuration(Math.abs(metrics.durationDeltaMs)).replace(' sec.', 's');
   const percent = Math.abs(metrics.durationDeltaPercent).toFixed(1);
-  return `${sign}${duration} (${sign}${percent}%)`;
+  return `${sign}${duration} (${arrow}${percent}%)`;
+}
+
+// Рисует стрелку процента отдельно, чтобы окрасить только её.
+function drawDelta(ctx, x, y, metrics) {
+  if (metrics.durationDeltaMs == null || metrics.durationDeltaPercent == null) {
+    ctx.fillStyle = COLORS.text;
+    ctx.fillText('No history', x, y);
+    return;
+  }
+
+  const sign = metrics.durationDeltaMs > 0 ? '+' : metrics.durationDeltaMs < 0 ? '−' : '';
+  const arrow = metrics.durationDeltaMs > 0 ? '↑' : metrics.durationDeltaMs < 0 ? '↓' : '';
+  const duration = formatDuration(Math.abs(metrics.durationDeltaMs)).replace(' sec.', 's');
+  const percent = Math.abs(metrics.durationDeltaPercent).toFixed(1);
+  const beforeArrow = `${sign}${duration} (`;
+
+  ctx.fillStyle = COLORS.text;
+  ctx.fillText(beforeArrow, x, y);
+  let cursorX = x + ctx.measureText(beforeArrow).width;
+
+  if (arrow) {
+    ctx.fillStyle = metrics.durationDeltaMs > 0 ? COLORS.failed : COLORS.passed;
+    ctx.fillText(arrow, cursorX, y);
+    cursorX += ctx.measureText(arrow).width;
+  }
+
+  ctx.fillStyle = COLORS.text;
+  ctx.fillText(`${percent}%)`, cursorX, y);
 }
 
 // Рисует заголовок карточки в стиле окна с тремя цветными точками.
@@ -143,11 +172,13 @@ function drawTimingBody({ ctx, x, y, width }, metrics) {
     ctx.fillStyle = COLORS.muted;
     ctx.font = '16px sans-serif';
     ctx.fillText(label, left, y + 24);
-    ctx.fillStyle = label === 'VS PREVIOUS' && metrics.durationDeltaMs > 0
-      ? COLORS.warning
-      : COLORS.text;
     ctx.font = 'bold 26px sans-serif';
-    ctx.fillText(value, left, y + 64);
+    if (label === 'VS PREVIOUS') {
+      drawDelta(ctx, left, y + 64, metrics);
+    } else {
+      ctx.fillStyle = COLORS.text;
+      ctx.fillText(value, left, y + 64);
+    }
   });
 }
 
