@@ -130,7 +130,7 @@ test('builds retry rows for layers that actually had retries', () => {
     },
   });
 
-  assert.deepEqual(rows, [{ name: 'UI', count: 2, color: '#e12afb' }]);
+  assert.deepEqual(rows, [{ name: 'UI', count: 2, color: '#8e51ff' }]);
 });
 
 test('sends summary and details as one Telegram media group', async () => {
