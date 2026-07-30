@@ -210,6 +210,8 @@ function drawSlowTestsBody({ ctx, x, y, width, height }, metrics) {
     ctx.fillStyle = COLORS.text;
     ctx.fillText(truncateToWidth(ctx, test.name, nameWidth - 20), x + layerWidth, baseline);
     fillPill(ctx, barX, baseline - 16, barWidth, 18, colorForLayer(test.layer));
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = COLORS.text;
     ctx.fillText(formatDuration(test.durationMs), barX + barWidth + 8, baseline);
   });
 }
