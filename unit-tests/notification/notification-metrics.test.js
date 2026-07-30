@@ -16,6 +16,7 @@ const {
   stabilityRows,
 } = require('../../scripts/render-notification.js');
 
+// Создаёт упрощённый Allure-результат, чтобы в тестах не дублировать большой JSON.
 function result({
   historyId,
   name,
@@ -38,7 +39,10 @@ function result({
   };
 }
 
+// Проверяет основной расчёт метрик на одном небольшом прогоне с ретраем,
+// пропущенным тестом и падением по таймауту.
 test('calculates quality, flaky, skipped, timing and failure categories', async () => {
+  // Временная папка имитирует allure-results и удаляется операционной системой.
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'notification-metrics-'));
   const resultsDir = path.join(directory, 'allure-results');
   const historyPath = path.join(directory, 'history.jsonl');
@@ -51,6 +55,7 @@ test('calculates quality, flaky, skipped, timing and failure categories', async 
     result({ historyId: 'api-passed', name: 'Delete user', layer: 'API', status: 'passed', start: 14000, stop: 22000 }),
   ];
 
+  // Сохраняем тестовые данные в том же формате, который создаёт Allure в CI.
   await Promise.all(results.map((item, index) => fs.writeFile(
     path.join(resultsDir, `${index}-result.json`),
     JSON.stringify(item),
@@ -63,6 +68,7 @@ test('calculates quality, flaky, skipped, timing and failure categories', async 
 
   const metrics = await loadNotificationMetrics({ resultsDir, historyPath });
 
+  // Сверяем итоговые числа, историю запуска и категории ошибок.
   assert.deepEqual(metrics.layers.UI, {
     total: 2,
     passed: 1,
@@ -89,6 +95,7 @@ test('calculates quality, flaky, skipped, timing and failure categories', async 
   assert.equal(formatDelta(metrics), '+3.0s (+25.0%)');
 });
 
+// Защищает вертикальные переносы и дополнительные строки в подписи Telegram.
 test('adds skipped and flaky counters to Telegram caption only when needed', () => {
   const caption = buildTelegramCaption(
     { base: { project: 'Project', links: {} } },
@@ -101,6 +108,7 @@ test('adds skipped and flaky counters to Telegram caption only when needed', () 
   assert.match(caption, /Нестабильно: 1 \(25\.0%\)/);
 });
 
+// Проверяет, что ретраи уходят на вторую картинку, а сводка становится компактнее.
 test('moves retries out of summary and compacts base collage', () => {
   const config = {
     base: {
@@ -122,6 +130,7 @@ test('moves retries out of summary and compacts base collage', () => {
   assert.equal(config.base.chart.items.length, 2);
 });
 
+// Показывает на графике только слои с реальными ретраями и использует их фирменный цвет.
 test('builds retry rows for layers that actually had retries', () => {
   const rows = retryRows({
     layers: {
@@ -133,8 +142,10 @@ test('builds retry rows for layers that actually had retries', () => {
   assert.deepEqual(rows, [{ name: 'UI', count: 2, color: '#8e51ff' }]);
 });
 
+// Проверяет запрос к Telegram без настоящей отправки сообщения.
 test('sends summary and details as one Telegram media group', async () => {
   let request;
+  // Подменяем Telegram API и запоминаем сформированный запрос для дальнейших проверок.
   const fetchImpl = async (url, options) => {
     request = { url, options };
     return {
@@ -163,6 +174,7 @@ test('sends summary and details as one Telegram media group', async () => {
     fetchImpl,
   });
 
+  // Убеждаемся, что обе картинки отправляются одним альбомом, а подпись есть только у первой.
   assert.equal(request.url, 'https://api.telegram.org/bottest-token/sendMediaGroup');
   assert.equal(request.options.method, 'POST');
   assert.equal(request.options.body.get('chat_id'), '-100123');
