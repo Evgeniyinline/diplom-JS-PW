@@ -1,1 +1,1 @@
-{"id":"8b9166a3ce8210f53cc7e7ede7c9c569","fullName":"ui/dashboard/proposals.spec.js:83:5","name":"Отмена закрывает форму и не создаёт КП","status":"passed","testResultsByEnv":{"default":"0a1f3438cc0ce32edf40ffa68832fded"}}
+{"id":"8b9166a3ce8210f53cc7e7ede7c9c569","fullName":"ui/dashboard/proposals.spec.js:83:5","name":"Отмена закрывает форму и не создаёт КП","status":"passed","testResultsByEnv":{"default":"2b58f57c92bd4726fbb6154051dad729"}}
