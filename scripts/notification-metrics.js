@@ -136,15 +136,39 @@ async function readResults(resultsDir) {
   return results;
 }
 
-// Берёт реальное время Playwright или вычисляет его по первой и последней попытке.
-async function readRunDuration(runMetricsPath, effectiveResults) {
+// Читает границы текущего запуска, записанные Playwright-репортёром.
+async function readRunMetrics(runMetricsPath) {
   try {
     const data = JSON.parse(await fs.readFile(runMetricsPath, 'utf8'));
-    if (Number.isFinite(data.durationMs) && data.durationMs >= 0) {
-      return data.durationMs;
-    }
+    const startTimeMs = Date.parse(data.startTime);
+
+    return {
+      durationMs: Number.isFinite(data.durationMs) && data.durationMs >= 0
+        ? data.durationMs
+        : null,
+      startTimeMs: Number.isFinite(startTimeMs) ? startTimeMs : null,
+    };
   } catch {
-    // Fall back to the visible interval in Allure results.
+    return { durationMs: null, startTimeMs: null };
+  }
+}
+
+// Убирает результаты прошлых локальных запусков из общей папки Allure.
+function resultsOfCurrentRun(results, startTimeMs) {
+  if (!Number.isFinite(startTimeMs)) {
+    return results;
+  }
+
+  const earliestStart = startTimeMs - 1000;
+  return results.filter((result) => (
+    Number.isFinite(result.start) && result.start >= earliestStart
+  ));
+}
+
+// Берёт реальное время Playwright или вычисляет его по первой и последней попытке.
+function runDuration(runMetrics, effectiveResults) {
+  if (runMetrics.durationMs != null) {
+    return runMetrics.durationMs;
   }
 
   const starts = effectiveResults.map((result) => result.start).filter(Number.isFinite);
@@ -228,7 +252,9 @@ async function loadNotificationMetrics({
   historyPath,
   topSlow = 3,
 }) {
-  const results = await readResults(resultsDir);
+  const allResults = await readResults(resultsDir);
+  const runMetrics = await readRunMetrics(runMetricsPath);
+  const results = resultsOfCurrentRun(allResults, runMetrics.startTimeMs);
   const attemptsByTest = new Map();
 
   results.forEach((result, index) => {
@@ -278,7 +304,7 @@ async function loadNotificationMetrics({
     LAYER_ORDER.filter((layer) => layers[layer]).map((layer) => [layer, layers[layer]]),
   );
   const testTimeMs = effectiveResults.reduce((sum, result) => sum + durationMsOf(result), 0);
-  const runTimeMs = await readRunDuration(runMetricsPath, effectiveResults);
+  const runTimeMs = runDuration(runMetrics, effectiveResults);
   const previousDurationMs = historyPath
     ? await previousTestDuration(historyPath, testTimeMs)
     : null;

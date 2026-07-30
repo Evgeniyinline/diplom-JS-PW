@@ -11,6 +11,7 @@
 - GitHub Actions: https://github.com/Evgeniyinline/diplom-JS-PW/actions
 - Allure Report: https://evgeniyinline.github.io/diplom-JS-PW/
 - Allure TestOps: https://allure.autotests.cloud/project/5230/launches
+- Тест-план: [актуальное покрытие UI и API](test-plan.md)
 - Release Notes: [обновление от 28.07.2026](RELEASE_NOTES.md)
 
 ## Стек
