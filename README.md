@@ -341,6 +341,12 @@ ALLURE_TOKEN
 
 ### Telegram Notification
 
+Полное сообщение:
+
+![Telegram Notification Message](docs/screenshots/telegram-notification-message.png)
+
+Подробная диагностика:
+
 ![Telegram Notification](docs/screenshots/telegram-notification.png)
 
 ## Полезные команды
