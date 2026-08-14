@@ -1,1 +1,1 @@
-{"id":"810eb83c6026e9ff3a15b2ccee9c0361","fullName":"api/proposals/proposals.spec.js:23:5","name":"@POST Пустое название КП не проходит валидацию","status":"passed","testResultsByEnv":{"default":"50d9d8b5fdbd27e32cf17ad988716623"}}
+{"id":"810eb83c6026e9ff3a15b2ccee9c0361","fullName":"api/proposals/proposals.spec.js:23:5","name":"@POST Пустое название КП не проходит валидацию","status":"passed","testResultsByEnv":{"default":"5f685a968ec0b3c9e5bd5061d0241060"}}
