@@ -16,10 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ALLURE_REPORT_URL: https://evgeniyinline.github.io/diplom-JS-PW/
-      ALLURE_ENDPOINT: https://allure.autotests.cloud/
-      ALLURE_PROJECT_ID: 5230
+      ALLURE_ENDPOINT: https://allure.qa.guru/
+      ALLURE_PROJECT_ID: 5343
       ALLURE_LAUNCH_NAME: "o2cloud calc dev #${{ github.run_number }}"
-      ALLURE_TESTOPS_URL: https://allure.autotests.cloud/project/5230/launches
+      ALLURE_TESTOPS_URL: https://allure.qa.guru/project/5343/launches
+
 
     steps:
       - name: Checkout repository
@@ -50,7 +51,7 @@ jobs:
           allure-endpoint: ${{ env.ALLURE_ENDPOINT }}
           allure-token: ${{ secrets.ALLURE_TOKEN }}
           allure-project-id: ${{ env.ALLURE_PROJECT_ID }}
-          allurectl-version: 2.21.1
+          # allurectl-version: 2.21.1
 
       - name: Run Playwright tests
         env:
