@@ -1,1 +1,1 @@
-{"id":"64d5d10bfa9c0a954936f8531472885a","fullName":"api/users/users.spec.js:41:7","name":"@PUT @GET Обновить профиль менеджера","status":"passed","testResultsByEnv":{"default":"e7ace851da5f8717eecade28f6cdc144"}}
+{"id":"64d5d10bfa9c0a954936f8531472885a","fullName":"api/users/users.spec.js:41:7","name":"@PUT @GET Обновить профиль менеджера","status":"passed","testResultsByEnv":{"default":"0ac7a0766c8cf5935eac45c18f3651cd"}}

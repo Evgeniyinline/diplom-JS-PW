@@ -1,1 +1,1 @@
-{"id":"2436fedb6020a00ec24342c589b50694","fullName":"api/users/users.spec.js:11:7","name":"@PUT @GET Обновить личные данные пользователя","status":"passed","testResultsByEnv":{"default":"11c37abda61232dab19e467fb1b82aa0"}}
+{"id":"2436fedb6020a00ec24342c589b50694","fullName":"api/users/users.spec.js:11:7","name":"@PUT @GET Обновить личные данные пользователя","status":"passed","testResultsByEnv":{"default":"de548acbeb4895a1da18c8f91737d49e"}}
