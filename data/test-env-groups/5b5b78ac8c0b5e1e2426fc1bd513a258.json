@@ -1,1 +1,1 @@
-{"id":"5b5b78ac8c0b5e1e2426fc1bd513a258","fullName":"ui/dashboard/proposals.spec.js:57:5","name":"В форме создания доступны калькуляторы всех регионов","status":"broken","testResultsByEnv":{"default":"dc1e9e0ece3a94674b6d594f14ef66fb"}}
+{"id":"5b5b78ac8c0b5e1e2426fc1bd513a258","fullName":"ui/dashboard/proposals.spec.js:57:5","name":"В форме создания доступны калькуляторы всех регионов","status":"passed","testResultsByEnv":{"default":"90dc8d6037b463afe38c7ad824498b74"}}
