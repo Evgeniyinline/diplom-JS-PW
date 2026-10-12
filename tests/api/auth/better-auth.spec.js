@@ -9,7 +9,7 @@ test.describe('Auth API', () => {
 
     const authState = await authApi.authorizeAdminByApi(payload);
 
-    expect(authState.sessionCookie.name).toBe('better-auth.session_token');
+    expect(authState.sessionCookie.name).toBe('__Secure-better-auth.session_token');
 
     const sessionResponse = await authApi.getSession();
 

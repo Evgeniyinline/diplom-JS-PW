@@ -62,7 +62,7 @@ jobs:
           BASE_URL: https://calc-dev.v04.dev
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
-        run: npx playwright test --reporter=line,allure-playwright
+        run: allurectl watch -- npx playwright test
 
       - name: Prepare Allure history
         if: always()

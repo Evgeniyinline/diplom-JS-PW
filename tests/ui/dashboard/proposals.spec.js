@@ -32,9 +32,12 @@ test ('Поиск КП: очистка поиска возвращает спи�
   await proposalsApi.createProposal(proposal);
   await managerApp.openProposalPage();
   await managerApp.proposalPage.searchOrder(`Не существующее КП ${Date.now()}`);
+
+  await expect(managerApp.emptyStateComponent.getSearchResult()).toBeVisible();
+  
   await managerApp.proposalPage.clearSearch();
 
-  expect(await managerApp.proposalPage.getProposalsCount()).toBeGreaterThan(0);
+  await expect(managerApp.proposalPage.getProposalByName(proposal.proposalName)).toBeVisible();
 
 });
 
