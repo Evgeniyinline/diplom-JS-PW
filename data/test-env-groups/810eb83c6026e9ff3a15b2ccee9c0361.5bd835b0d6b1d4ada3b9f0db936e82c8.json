@@ -1,0 +1,1 @@
+{"id":"810eb83c6026e9ff3a15b2ccee9c0361.5bd835b0d6b1d4ada3b9f0db936e82c8","fullName":"api/proposals/proposals.spec.js:23:5","name":"@POST Пустое название КП не проходит валидацию","status":"passed","testResultsByEnv":{"default":"ee063d3f3ef97245db9767fac3960769"}}

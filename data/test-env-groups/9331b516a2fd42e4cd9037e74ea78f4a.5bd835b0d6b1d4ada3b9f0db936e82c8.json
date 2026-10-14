@@ -1,0 +1,1 @@
+{"id":"9331b516a2fd42e4cd9037e74ea78f4a.5bd835b0d6b1d4ada3b9f0db936e82c8","fullName":"api/users/users.spec.js:31:7","name":"@PUT Пустое имя не проходит валидацию","status":"passed","testResultsByEnv":{"default":"969380c69abec73c661a92b476b5f7ee"}}
