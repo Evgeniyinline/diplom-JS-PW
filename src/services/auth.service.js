@@ -1,7 +1,7 @@
 import { AuthController } from "@/controllers/auth.controller.js";
 import { SignInEmailBuilder } from "@/helpers/builders/index.js";
 
-const AUTH_COOKIE_NAME = "better-auth.session_token";
+const AUTH_COOKIE_NAME = "__Secure-better-auth.session_token";
 
 export class AuthService {
   constructor(request) {
@@ -22,7 +22,8 @@ export class AuthService {
     );
 
     if (!sessionCookie) {
-      throw new Error(`Admin auth failed. Cookie ${AUTH_COOKIE_NAME} was not found`);
+      const cookieNames = storageState.cookies.map((cookie) => cookie.name);
+      throw new Error(`Admin auth failed. Session cookie was not found. Status: ${response.status()}. Cookie names: ${JSON.stringify(cookieNames)}`);
     }
 
     return {

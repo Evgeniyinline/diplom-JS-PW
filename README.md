@@ -10,7 +10,7 @@
 
 - GitHub Actions: https://github.com/Evgeniyinline/diplom-JS-PW/actions
 - Allure Report: https://evgeniyinline.github.io/diplom-JS-PW/
-- Allure TestOps: https://allure.autotests.cloud/project/5230/launches
+- Allure TestOps: https://allure.qa.guru/project/5390/launches
 - Тест-план: [актуальное покрытие UI и API](test-plan.md)
 - Release Notes: [обновление от 28.07.2026](RELEASE_NOTES.md)
 
@@ -309,8 +309,8 @@ npm run test:notification
 
 ```text
 Orlov-Diplom-PW-JS
-Project ID: 5230
-Endpoint: https://allure.autotests.cloud/
+Project ID: 5390
+Endpoint: https://allure.qa.guru/
 ```
 
 Для отправки результатов в TestOps в настройках репозитория добавлен secret:

@@ -35,7 +35,7 @@ const SIGNATURE_PATH = resolve(process.cwd(), 'test-data/profile/signature.png')
       name: '',
     });
 
-    expect(response.status()).toBe(400);
+    expect(response.status()).toBe(422);
   });
 
   test('@PUT @GET Обновить профиль менеджера', async ({ editProfileApi }) => {

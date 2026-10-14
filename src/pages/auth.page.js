@@ -13,7 +13,7 @@ export class AuthPage {
     this.loginButton = page.getByTestId('login-submit-button');
     this.errorMessageEmail = page.getByText('Неверный email');
     this.errorMessagePassword = page.getByText('Пароль должен быть не менее 5 символов');
-    this.errorMessage = page.getByText('Invalid email or password');
+    this.errorMessage = page.getByText('Неверная почта или пароль');
 
   }
   // авторизация пользователя

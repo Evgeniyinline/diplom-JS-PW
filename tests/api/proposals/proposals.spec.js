@@ -29,7 +29,7 @@ test('@POST Пустое название КП не проходит валид�
 
   const response = await proposalsApi.createProposal(proposal);
 
-  expect(response.status()).toBe(400);
+  expect(response.status()).toBe(422);
   expect(await response.json()).toBeTruthy();
 
 });

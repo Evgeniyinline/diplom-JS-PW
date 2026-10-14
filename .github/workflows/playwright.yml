@@ -17,9 +17,9 @@ jobs:
     env:
       ALLURE_REPORT_URL: https://evgeniyinline.github.io/diplom-JS-PW/
       ALLURE_ENDPOINT: https://allure.qa.guru/
-      ALLURE_PROJECT_ID: 5343
+      ALLURE_PROJECT_ID: 5390
       ALLURE_LAUNCH_NAME: "o2cloud calc dev #${{ github.run_number }}"
-      ALLURE_TESTOPS_URL: https://allure.qa.guru/project/5343/launches
+      ALLURE_TESTOPS_URL: https://allure.qa.guru/project/5390/launches
 
 
     steps:
