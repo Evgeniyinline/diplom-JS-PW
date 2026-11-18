@@ -55,7 +55,7 @@
 
     
     <script>
-      window.allureReportOptions = {"id":"awesome","reportName":"o2cloud calc dev","logo":"","theme":"auto","reportLanguage":"en","createdAt":1791988644084,"reportUuid":"d22ffd0c-697c-4154-9202-9e4772bf3e57","groupBy":[],"cacheKey":"1791988644084","ci":{"type":"github","detected":true,"repoName":"diplom-JS-PW","jobUid":"Evgeniyinline/diplom-JS-PW_Playwright Tests","jobUrl":"https://github.com/Evgeniyinline/diplom-JS-PW/actions?query=workflow%3A%22Playwright%20Tests%22","jobName":"Evgeniyinline/diplom-JS-PW - Playwright Tests","jobRunUid":"38581589214","jobRunUrl":"https://github.com/Evgeniyinline/diplom-JS-PW/actions/runs/38581589214","jobRunName":"test #82","jobRunBranch":"main","pullRequestUrl":"","pullRequestName":"","provider":"github","repository":{"slug":"Evgeniyinline/diplom-JS-PW","url":"https://github.com/Evgeniyinline/diplom-JS-PW"},"sourceBranch":"main"},"runSummary":{"start":1791988514827,"stop":1791988632024,"duration":117197},"runSummaryByEnv":{"default":{"start":1791988514827,"stop":1791988632024,"duration":117197}},"layout":"base","allureVersion":"3.20.1","sections":["charts","timeline"],"defaultSection":""}
+      window.allureReportOptions = {"id":"awesome","reportName":"o2cloud calc dev","logo":"","theme":"auto","reportLanguage":"en","createdAt":1794996407797,"reportUuid":"0d9ed644-7b27-4954-973a-0e1b227bca83","groupBy":[],"cacheKey":"1794996407797","ci":{"type":"github","detected":true,"repoName":"diplom-JS-PW","jobUid":"Evgeniyinline/diplom-JS-PW_Playwright Tests","jobUrl":"https://github.com/Evgeniyinline/diplom-JS-PW/actions?query=workflow%3A%22Playwright%20Tests%22","jobName":"Evgeniyinline/diplom-JS-PW - Playwright Tests","pipelineRunName":"Playwright Tests","pipelineRunUrl":"https://github.com/Evgeniyinline/diplom-JS-PW/actions/runs/44281877805","jobRunUid":"44281877805","jobRunUrl":"https://github.com/Evgeniyinline/diplom-JS-PW/actions/runs/44281877805","jobRunName":"test #89","jobRunBranch":"main","pullRequestUrl":"","pullRequestName":"","commitSha":"98b6b6c10373253bee34d76056fddf11c0135f2d","provider":"github","repository":{"slug":"Evgeniyinline/diplom-JS-PW","url":"https://github.com/Evgeniyinline/diplom-JS-PW"},"sourceBranch":"main"},"git":{"commit":"98b6b6c10373253bee34d76056fddf11c0135f2d","branch":"main"},"runSummary":{"start":1794996337041,"stop":1794996398508,"duration":61467},"runSummaryByEnv":{"default":{"start":1794996337041,"stop":1794996398508,"duration":61467}},"layout":"base","allureVersion":"3.33.0","sections":["charts","timeline"],"defaultSection":""}
     </script>
 </head>
 <body>
@@ -68,8 +68,9 @@
     <div id="app"></div>
     
     <script>
-      const { origin, pathname } = window.location; 
-      const url = new URL(pathname, origin);
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
       const baseEl = document.createElement("base");
       
       baseEl.href = url.toString();
@@ -80,7 +81,7 @@
     <script>
       window.allure = window.allure || {};
     </script>
-    <script   src="app-37f09cbd4e17b2e88575.js"></script>
+    <script   src="app-189f0a86432a713a6a0d.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LNDJ3J7WT0"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -88,8 +89,8 @@
         gtag('js', new Date());
         gtag('config', 'G-LNDJ3J7WT0', {
           "report": "awesome",
-          "allureVersion": "3.20.1",
-          "reportUuid": "d22ffd0c-697c-4154-9202-9e4772bf3e57",
+          "allureVersion": "3.33.0",
+          "reportUuid": "0d9ed644-7b27-4954-973a-0e1b227bca83",
           "single_file": "false"
         });
     </script>
