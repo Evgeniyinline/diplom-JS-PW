@@ -13,7 +13,7 @@ permissions:
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       ALLURE_REPORT_URL: https://evgeniyinline.github.io/diplom-JS-PW/
       ALLURE_ENDPOINT: https://allure.qa.guru/
@@ -73,11 +73,12 @@ jobs:
           fi
 
       - name: Generate Allure report
-        if: always()
+        id: allure_report
+        if: always() && hashFiles('allure-results/*-result.json') != ''
         run: npx allure@latest generate ./allure-results --config ./allurerc.mjs --output ./allure-report
 
       - name: Preserve Allure history
-        if: always()
+        if: always() && steps.allure_report.outcome == 'success'
         run: |
           if [ -f allure-history/history.jsonl ]; then
             cp allure-history/history.jsonl allure-report/history.jsonl
@@ -93,7 +94,7 @@ jobs:
 
       - name: Upload Allure report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.allure_report.outcome == 'success'
         with:
           name: allure-report
           path: allure-report/
@@ -101,7 +102,7 @@ jobs:
 
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: always() && github.ref == 'refs/heads/main'
+        if: always() && steps.allure_report.outcome == 'success' && github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
@@ -112,7 +113,7 @@ jobs:
           commit_message: Update Allure report ${{ github.sha }}
 
       - name: Add Allure report link to summary
-        if: always()
+        if: always() && steps.allure_report.outcome == 'success'
         run: |
           echo "### Allure Report" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
