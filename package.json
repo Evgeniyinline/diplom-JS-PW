@@ -27,7 +27,7 @@
   "devDependencies": {
     "@allure-notifications/core": "6.0.8",
     "@faker-js/faker": "^10.4.0",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.65.1",
     "@types/node": "^25.9.0",
     "allure-js-commons": "3.8.0",
     "allure-notifications": "6.0.8",
